@@ -16,7 +16,7 @@
     .container{max-width:1200px;margin:0 auto;padding:24px}
     header{
       display:flex;justify-content:space-between;align-items:center;gap:12px;
-      padding:18px 18px;border:1px solid rgba(148,163,184,.25);
+      padding:18px;border:1px solid rgba(148,163,184,.25);
       background: rgba(2,6,23,.6);
       border-radius:18px;
       box-shadow:0 20px 60px rgba(0,0,0,.35);
@@ -123,14 +123,12 @@
       display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
       font-size:13px;
     }
-    .item b{font-size:13px}
     .pill{
       padding:4px 8px;border-radius:999px;
       background: rgba(79,70,229,.22);
       border:1px solid rgba(79,70,229,.45);
       font-size:12px;font-weight:800;white-space:nowrap
     }
-
     .hidden{display:none !important}
 
     .toast{
@@ -142,6 +140,7 @@
       padding:12px 14px;border-radius:14px;
       box-shadow:0 20px 60px rgba(0,0,0,.35);
       display:none;
+      white-space:pre-wrap;
     }
     .toast.show{display:block}
   </style>
@@ -155,7 +154,7 @@
         <div class="logo">💪</div>
         <div>
           <h1>FitTrack Pro</h1>
-          <div class="subtitle">App partagée — sauvegarde dans Google Sheets (Workouts / Meals / Weight / BP)</div>
+          <div class="subtitle">BP synchronisé Google Sheets • autres données locales (pour l’instant)</div>
         </div>
       </div>
 
@@ -166,18 +165,17 @@
       </div>
     </header>
 
-    <div class="tabs" id="tabs">
+    <div class="tabs">
       <div class="tab active" data-tab="dashboard" onclick="showTab('dashboard')">📊 Dashboard</div>
       <div class="tab" data-tab="workouts" onclick="showTab('workouts')">🏃 Workouts</div>
       <div class="tab" data-tab="meals" onclick="showTab('meals')">🍽️ Meals</div>
       <div class="tab" data-tab="weight" onclick="showTab('weight')">⚖️ Weight</div>
-      <button class="btn primary" onclick="alert('CLICK OK')">✅ Enregistrer</button>
+      <div class="tab" data-tab="bp" onclick="showTab('bp')">🩺 BP</div>
     </div>
 
     <div class="grid">
       <div>
 
-        <!-- DASHBOARD -->
         <div id="dashboard" class="card">
           <h2>📊 Dashboard</h2>
           <div class="muted" id="dashHint">Chargement…</div>
@@ -189,156 +187,79 @@
           </div>
         </div>
 
-        <!-- WORKOUTS -->
         <div id="workouts" class="card hidden">
           <h2>🏃 Log a Workout</h2>
-
           <div class="row">
-            <div class="field">
-              <label>Utilisateur</label>
-              <select id="w_user"></select>
-            </div>
-            <div class="field">
-              <label>Type</label>
+            <div class="field"><label>Utilisateur</label><select id="w_user"></select></div>
+            <div class="field"><label>Type</label>
               <select id="w_type">
                 <option value="">Choisir…</option>
-                <option>Abs</option>
-                <option>Weights</option>
-                <option>Cycling</option>
-                <option>Elliptical</option>
-                <option>Walking</option>
+                <option>Abs</option><option>Weights</option><option>Cycling</option><option>Elliptical</option><option>Walking</option>
               </select>
             </div>
-            <div class="field">
-              <label>Durée (minutes)</label>
-              <input id="w_duration" type="number" min="1" />
-            </div>
-            <div class="field">
-              <label>Intensité</label>
-              <select id="w_intensity">
-                <option>Low</option>
-                <option>Moderate</option>
-                <option>High</option>
-              </select>
-            </div>
+            <div class="field"><label>Durée (min)</label><input id="w_duration" type="number" min="1"/></div>
+            <div class="field"><label>Intensité</label><select id="w_intensity"><option>Low</option><option>Moderate</option><option>High</option></select></div>
           </div>
-
-          <button class="btn primary" onclick="addWorkout()">✅ Enregistrer</button>
-
+          <button class="btn primary" onclick="addWorkoutLocal()">✅ Enregistrer (local)</button>
           <h2 style="margin-top:16px;">📜 Historique</h2>
           <div class="list" id="w_list"></div>
         </div>
 
-        <!-- MEALS -->
         <div id="meals" class="card hidden">
           <h2>🍽️ Log a Meal</h2>
-
           <div class="row">
-            <div class="field">
-              <label>Utilisateur</label>
-              <select id="m_user"></select>
-            </div>
-            <div class="field">
-              <label>Type</label>
-              <select id="m_type">
-                <option value="">Choisir…</option>
-                <option>Breakfast</option>
-                <option>Lunch</option>
-                <option>Dinner</option>
-                <option>Snack</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Heure</label>
-              <input id="m_time" type="time" />
-            </div>
+            <div class="field"><label>Utilisateur</label><select id="m_user"></select></div>
+            <div class="field"><label>Type</label><select id="m_type"><option value="">Choisir…</option><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></div>
+            <div class="field"><label>Heure</label><input id="m_time" type="time"/></div>
           </div>
-
-          <label>Description</label>
-          <textarea id="m_desc" placeholder="Ex: poulet + riz + salade…"></textarea>
-
-          <button class="btn primary" onclick="addMeal()">✅ Enregistrer</button>
-
+          <label>Description</label><textarea id="m_desc"></textarea>
+          <button class="btn primary" onclick="addMealLocal()">✅ Enregistrer (local)</button>
           <h2 style="margin-top:16px;">📜 Historique</h2>
           <div class="list" id="m_list"></div>
         </div>
 
-        <!-- WEIGHT -->
         <div id="weight" class="card hidden">
           <h2>⚖️ Log Weight</h2>
-
           <div class="row">
-            <div class="field">
-              <label>Utilisateur</label>
-              <select id="wt_user"></select>
-            </div>
-            <div class="field">
-              <label>Poids (kg)</label>
-              <input id="wt_value" type="number" step="0.1" min="30" max="300" />
-            </div>
-            <div class="field">
-              <label>Date</label>
-              <input id="wt_date" type="date" />
-            </div>
+            <div class="field"><label>Utilisateur</label><select id="wt_user"></select></div>
+            <div class="field"><label>Poids (kg)</label><input id="wt_value" type="number" step="0.1" min="30" max="300"/></div>
+            <div class="field"><label>Date</label><input id="wt_date" type="date"/></div>
           </div>
-
-          <button class="btn primary" onclick="addWeight()">✅ Enregistrer</button>
-
+          <button class="btn primary" onclick="addWeightLocal()">✅ Enregistrer (local)</button>
           <h2 style="margin-top:16px;">📜 Historique</h2>
           <div class="list" id="wt_list"></div>
         </div>
 
-        <!-- BP -->
         <div id="bp" class="card hidden">
           <h2>🩺 Log Blood Pressure</h2>
-
           <div class="row">
-            <div class="field">
-              <label>Utilisateur</label>
-              <select id="bp_user"></select>
-            </div>
-            <div class="field">
-              <label>Systolic</label>
-              <input id="bp_sys" type="number" min="70" max="250" />
-            </div>
-            <div class="field">
-              <label>Diastolic</label>
-              <input id="bp_dia" type="number" min="40" max="150" />
-            </div>
-            <div class="field">
-              <label>Heart Rate</label>
-              <input id="bp_hr" type="number" min="40" max="200" />
-            </div>
+            <div class="field"><label>Utilisateur</label><select id="bp_user"></select></div>
+            <div class="field"><label>Systolic</label><input id="bp_sys" type="number" min="70" max="250"/></div>
+            <div class="field"><label>Diastolic</label><input id="bp_dia" type="number" min="40" max="150"/></div>
+            <div class="field"><label>Heart Rate</label><input id="bp_hr" type="number" min="40" max="200"/></div>
           </div>
-
-          <button class="btn primary" onclick="addBP()">✅ Enregistrer</button>
-
-          <h2 style="margin-top:16px;">📜 Historique</h2>
+          <button class="btn primary" onclick="addBP()">✅ Enregistrer (Google Sheet)</button>
+          <h2 style="margin-top:16px;">📜 Historique BP</h2>
           <div class="list" id="bp_list"></div>
         </div>
 
       </div>
 
-      <!-- SIDE PANEL -->
       <div class="card">
         <h2>👥 Vue</h2>
-
         <label>Afficher</label>
         <select id="viewUser" onchange="applyView()"></select>
 
         <div class="muted" style="margin-top:10px;">
-          Astuce : “Recharger” relit Google Sheets.
+          API : <span id="apiLabel" style="font-weight:900;"></span>
         </div>
 
-        <div class="muted" style="margin-top:10px;">
-          Si tu vois “Sheet not found”, c’est le <b>nom exact</b> de l’onglet (BP vs bp).
-        </div>
-
-        <div class="muted" style="margin-top:10px;">
-          API actuelle : <span id="apiLabel" style="font-weight:900;"></span>
-        </div>
-
+        <button class="btn" style="margin-top:12px;" onclick="testApi()">🧪 Tester API</button>
         <button class="btn" style="margin-top:12px;" onclick="resetLocal()">🧹 Reset local</button>
+
+        <div class="muted" style="margin-top:10px;">
+          Note : Workouts/Meals/Weight sont locaux tant que ton Apps Script ne propose pas leurs actions.
+        </div>
       </div>
     </div>
 
@@ -347,335 +268,293 @@
   <div class="toast" id="toast"></div>
 
 <script>
-/** ========= CONFIG ========= **/
-const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwvUseBbPVOq2gpXxkZftqh3XaDXNZQ_RxHCChx1TZG8ibxC9XwtDj1rnWIN-I6zVsdVw/exec";
-let API_URL = localStorage.getItem("fittrack_api") || DEFAULT_API;
+  const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwvUseBbPVOq2gpXxkZftqh3XaDXNZQ_RxHCChx1TZG8ibxC9XwtDj1rnWIN-I6zVsdVw/exec";
+  let API_URL = localStorage.getItem("fittrack_api") || DEFAULT_API;
 
-// feuilles
-// IMPORTANT : ton onglet est BP (majuscule). On essaie BP puis fallback bp.
-const SHEETS = {
-  workouts: "workouts",
-  meals: "meals",
-  weight: "weight",
-  bp: "BP"   // on veut BP
-};
-const SHEET_FALLBACK = { bp: "bp" };
+  let names = JSON.parse(localStorage.getItem("fittrack_names") || '{"user1":"oly","user2":"sister"}');
+  let currentView = localStorage.getItem("fittrack_view") || "all";
 
-/** ========= STATE ========= **/
-let names = JSON.parse(localStorage.getItem("fittrack_names") || '{"user1":"oly","user2":"sister"}');
-let currentView = localStorage.getItem("fittrack_view") || "all";
+  let localData = JSON.parse(localStorage.getItem("fittrack_local") || '{"workouts":[],"meals":[],"weight":[]}');
 
-let data = {
-  workouts: [],
-  meals: [],
-  weight: [],
-  bp: []
-};
+  let bpData = []; // vient du Google Sheet via ?action=bp
 
-function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 2800);
-}
-
-function showTab(id){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.querySelector(`.tab[data-tab="${id}"]`).classList.add("active");
-
-  ["dashboard","workouts","meals","weight","bp"].forEach(x=>{
-    document.getElementById(x).classList.toggle("hidden", x !== id);
-  });
-}
-
-/** ========= UI INIT ========= **/
-function fillUsers(){
-  const selects = ["w_user","m_user","wt_user","bp_user","viewUser"];
-  selects.forEach(id=>{
-    const el = document.getElementById(id);
-    el.innerHTML = "";
-    if(id === "viewUser"){
-      el.insertAdjacentHTML("beforeend", `<option value="all">📊 Tout</option>`);
-    }
-    el.insertAdjacentHTML("beforeend", `<option value="user1">${names.user1}</option>`);
-    el.insertAdjacentHTML("beforeend", `<option value="user2">${names.user2}</option>`);
-  });
-
-  document.getElementById("viewUser").value = currentView;
-}
-
-function applyView(){
-  currentView = document.getElementById("viewUser").value;
-  localStorage.setItem("fittrack_view", currentView);
-  renderAll();
-}
-
-function openNames(){
-  const u1 = prompt("Nom User 1 :", names.user1);
-  if(u1 === null) return;
-  const u2 = prompt("Nom User 2 :", names.user2);
-  if(u2 === null) return;
-  names = {user1: u1.trim() || "user1", user2: u2.trim() || "user2"};
-  localStorage.setItem("fittrack_names", JSON.stringify(names));
-  fillUsers();
-  toast("Noms enregistrés ✅");
-  renderAll();
-}
-
-function setApi(){
-  const u = prompt("Colle ton URL Apps Script /exec :", API_URL);
-  if(!u) return;
-  API_URL = u.trim();
-  localStorage.setItem("fittrack_api", API_URL);
-  document.getElementById("apiLabel").textContent = API_URL;
-  toast("API mise à jour ✅");
-  reloadAll();
-}
-
-function resetLocal(){
-  if(!confirm("Reset local (noms + cache) ?")) return;
-  localStorage.removeItem("fittrack_names");
-  localStorage.removeItem("fittrack_cache");
-  localStorage.removeItem("fittrack_view");
-  names = {user1:"oly", user2:"sister"};
-  currentView = "all";
-  fillUsers();
-  toast("Reset local ✅");
-  reloadAll();
-}
-
-/** ========= API HELPERS ========= **/
-async function apiGet(params){
-  const res = await fetch(API_URL + "?" + params, { method:"GET" });
-  return await res.json();
-}
-
-async function apiPost(payload){
-  const res = await fetch(API_URL, {
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
-  return await res.json();
-}
-
-// liste avec fallback pour BP/bp
-async function listSheet(kind){
-  const sheet = SHEETS[kind];
-  let r = await apiGet(`action=list&sheet=${encodeURIComponent(sheet)}`);
-  if(r && r.ok) return r;
-
-  // fallback si "Sheet not found"
-  const fb = SHEET_FALLBACK[kind];
-  if(fb){
-    const r2 = await apiGet(`action=list&sheet=${encodeURIComponent(fb)}`);
-    if(r2 && r2.ok) return r2;
-  }
-  return r; // renvoie l'erreur originale
-}
-
-/** ========= LOAD / RENDER ========= **/
-function filterByView(arr){
-  if(currentView === "all") return arr;
-  return arr.filter(x => x.user === currentView);
-}
-
-function formatDate(d){
-  try{
-    const x = new Date(d);
-    if(String(x) === "Invalid Date") return d;
-    return x.toLocaleString();
-  }catch(e){ return d; }
-}
-
-function renderDashboard(){
-  const now = new Date();
-  const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
-
-  const w = filterByView(data.workouts);
-  const wWeek = w.filter(x => new Date(x.date) >= weekAgo);
-  const minutes = wWeek.reduce((s,x)=> s + (Number(x.duration)||0), 0);
-
-  const wt = filterByView(data.weight);
-  const lastWeight = wt.length ? wt[wt.length-1].value : "—";
-
-  const bp = filterByView(data.bp);
-  const lastBP = bp.length ? `${bp[bp.length-1].systolic}/${bp[bp.length-1].diastolic}` : "—";
-
-  document.getElementById("s_workouts").textContent = wWeek.length;
-  document.getElementById("s_minutes").textContent = minutes;
-  document.getElementById("s_weight").textContent = lastWeight;
-  document.getElementById("s_bp").textContent = lastBP;
-
-  document.getElementById("dashHint").textContent =
-    currentView === "all"
-      ? "Vue: tout le monde"
-      : `Vue: ${names[currentView] || currentView}`;
-}
-
-function renderLists(){
-  // Workouts
-  const w = filterByView(data.workouts).slice().reverse().slice(0, 30);
-  document.getElementById("w_list").innerHTML = w.length ? w.map(x=>`
-    <div class="item">
-      <div>
-        <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.duration} min • ${x.intensity}
-        <div class="muted">${formatDate(x.date)}</div>
-      </div>
-      <span class="pill">workout</span>
-    </div>
-  `).join("") : `<div class="muted">Aucun workout.</div>`;
-
-  // Meals
-  const m = filterByView(data.meals).slice().reverse().slice(0, 30);
-  document.getElementById("m_list").innerHTML = m.length ? m.map(x=>`
-    <div class="item">
-      <div>
-        <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.time || ""}
-        <div class="muted">${x.description || ""}</div>
-        <div class="muted">${x.date || ""}</div>
-      </div>
-      <span class="pill">meal</span>
-    </div>
-  `).join("") : `<div class="muted">Aucun repas.</div>`;
-
-  // Weight
-  const wt = filterByView(data.weight).slice().reverse().slice(0, 30);
-  document.getElementById("wt_list").innerHTML = wt.length ? wt.map(x=>`
-    <div class="item">
-      <div>
-        <b>${names[x.user] || x.user}</b> — ${x.value} kg
-        <div class="muted">${x.date || ""}</div>
-      </div>
-      <span class="pill">weight</span>
-    </div>
-  `).join("") : `<div class="muted">Aucun poids.</div>`;
-
-  // BP
-  const bp = filterByView(data.bp).slice().reverse().slice(0, 30);
-  document.getElementById("bp_list").innerHTML = bp.length ? bp.map(x=>`
-    <div class="item">
-      <div>
-        <b>${names[x.user] || x.user}</b> — ${x.systolic}/${x.diastolic} mmHg
-        ${x.heartRate ? ` • ${x.heartRate} bpm` : ""}
-        <div class="muted">${x.date || ""} • ${formatDate(x.timestamp || "")}</div>
-      </div>
-      <span class="pill">BP</span>
-    </div>
-  `).join("") : `<div class="muted">Aucun BP.</div>`;
-}
-
-function renderAll(){
-  renderDashboard();
-  renderLists();
-}
-
-/** ========= ADD METHODS ========= **/
-async function addWorkout(){
-  const payload = {
-    action: "workout_add",
-    user: document.getElementById("w_user").value,
-    type: document.getElementById("w_type").value,
-    duration: Number(document.getElementById("w_duration").value || 0),
-    intensity: document.getElementById("w_intensity").value,
-    date: new Date().toISOString()
-  };
-  const r = await apiPost(payload);
-  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
-  toast("Workout sauvegardé ✅");
-  await reloadAll();
-}
-
-async function addMeal(){
-  const payload = {
-    action: "meal_add",
-    user: document.getElementById("m_user").value,
-    type: document.getElementById("m_type").value,
-    time: document.getElementById("m_time").value,
-    description: document.getElementById("m_desc").value,
-    date: new Date().toISOString().split("T")[0],
-    fullDate: new Date().toISOString()
-  };
-  const r = await apiPost(payload);
-  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
-  toast("Meal sauvegardé ✅");
-  await reloadAll();
-}
-
-async function addWeight(){
-  const payload = {
-    action: "weight_add",
-    user: document.getElementById("wt_user").value,
-    value: Number(document.getElementById("wt_value").value || 0),
-    date: document.getElementById("wt_date").value || new Date().toISOString().split("T")[0],
-    timestamp: new Date().toISOString()
-  };
-  const r = await apiPost(payload);
-  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
-  toast("Poids sauvegardé ✅");
-  await reloadAll();
-}
-
-async function addBP(){
-  const payload = {
-    action: "bp_add",
-    user: document.getElementById("bp_user").value,
-    systolic: Number(document.getElementById("bp_sys").value || 0),
-    diastolic: Number(document.getElementById("bp_dia").value || 0),
-    heartRate: Number(document.getElementById("bp_hr").value || 0),
-    date: new Date().toISOString().split("T")[0],
-    timestamp: new Date().toISOString()
-  };
-  const r = await apiPost(payload);
-  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
-  toast("BP sauvegardé ✅");
-  await reloadAll();
-}
-
-/** ========= RELOAD ========= **/
-async function reloadAll(){
-  toast("Rechargement…");
-
-  // charge tout depuis Sheets
-  const kinds = ["workouts","meals","weight","bp"];
-  for(const k of kinds){
-    const r = await listSheet(k);
-    if(!r || !r.ok){
-      console.warn("Load error", k, r);
-      alert(`Erreur sur "${k}": ${r?.error || "unknown"}\n\n👉 Vérifie le nom EXACT de l'onglet.\nEx: BP vs bp`);
-      return;
-    }
-    data[k] = r.rows || [];
+  function toast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 3200);
   }
 
-  // cache local juste pour confort
-  localStorage.setItem("fittrack_cache", JSON.stringify(data));
+  function showTab(id){
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelector(`.tab[data-tab="${id}"]`).classList.add("active");
+    ["dashboard","workouts","meals","weight","bp"].forEach(x=>{
+      document.getElementById(x).classList.toggle("hidden", x !== id);
+    });
+  }
 
-  renderAll();
-  toast("OK ✅");
-}
+  function fillUsers(){
+    const selects = ["w_user","m_user","wt_user","bp_user","viewUser"];
+    selects.forEach(id=>{
+      const el = document.getElementById(id);
+      el.innerHTML = "";
+      if(id === "viewUser"){
+        el.insertAdjacentHTML("beforeend", `<option value="all">📊 Tout</option>`);
+      }
+      el.insertAdjacentHTML("beforeend", `<option value="user1">${names.user1}</option>`);
+      el.insertAdjacentHTML("beforeend", `<option value="user2">${names.user2}</option>`);
+    });
+    document.getElementById("viewUser").value = currentView;
+  }
 
-/** ========= BOOT ========= **/
-(function boot(){
-  document.getElementById("apiLabel").textContent = API_URL;
-  fillUsers();
+  function applyView(){
+    currentView = document.getElementById("viewUser").value;
+    localStorage.setItem("fittrack_view", currentView);
+    renderAll();
+  }
 
-  // defaults time/date
-  const now = new Date();
-  document.getElementById("m_time").value = now.toTimeString().slice(0,5);
-  document.getElementById("wt_date").value = now.toISOString().split("T")[0];
+  function openNames(){
+    const u1 = prompt("Nom User 1 :", names.user1);
+    if(u1 === null) return;
+    const u2 = prompt("Nom User 2 :", names.user2);
+    if(u2 === null) return;
+    names = {user1: u1.trim() || "user1", user2: u2.trim() || "user2"};
+    localStorage.setItem("fittrack_names", JSON.stringify(names));
+    fillUsers();
+    toast("Noms enregistrés ✅");
+    renderAll();
+  }
 
-  // tente d’afficher cache instant puis reload
-  const cache = localStorage.getItem("fittrack_cache");
-  if(cache){
+  function setApi(){
+    const u = prompt("Colle ton URL Apps Script /exec :", API_URL);
+    if(!u) return;
+    API_URL = u.trim();
+    localStorage.setItem("fittrack_api", API_URL);
+    document.getElementById("apiLabel").textContent = API_URL;
+    toast("API mise à jour ✅");
+    reloadAll();
+  }
+
+  function resetLocal(){
+    if(!confirm("Reset local (noms + données locales) ?")) return;
+    localStorage.removeItem("fittrack_names");
+    localStorage.removeItem("fittrack_local");
+    localStorage.removeItem("fittrack_view");
+    names = {user1:"oly", user2:"sister"};
+    currentView = "all";
+    localData = {workouts:[],meals:[],weight:[]};
+    fillUsers();
+    toast("Reset local ✅");
+    renderAll();
+  }
+
+  async function apiGet(params){
+    const res = await fetch(API_URL + "?" + params, { method:"GET" });
+    return await res.json();
+  }
+  async function apiPost(payload){
+    const res = await fetch(API_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  }
+
+  async function testApi(){
     try{
-      data = JSON.parse(cache);
-      renderAll();
-      document.getElementById("dashHint").textContent = "Cache local affiché… puis reload Google Sheets.";
-    }catch(e){}
+      const r = await apiGet("");
+      toast("API répond ✅\n" + JSON.stringify(r, null, 2));
+    }catch(e){
+      toast("API KO ❌\n" + String(e));
+    }
   }
-  reloadAll();
-})();
+
+  function filterByView(arr){
+    if(currentView === "all") return arr;
+    return arr.filter(x => x.user === currentView);
+  }
+
+  function formatDate(d){
+    try{
+      const x = new Date(d);
+      if(String(x) === "Invalid Date") return d;
+      return x.toLocaleString();
+    }catch(e){ return d; }
+  }
+
+  function renderDashboard(){
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+
+    const workouts = filterByView(localData.workouts);
+    const wWeek = workouts.filter(x => new Date(x.date) >= weekAgo);
+    const minutes = wWeek.reduce((s,x)=> s + (Number(x.duration)||0), 0);
+
+    const weights = filterByView(localData.weight);
+    const lastWeight = weights.length ? weights[weights.length-1].value : "—";
+
+    const bps = filterByView(bpData);
+    const lastBP = bps.length ? `${bps[bps.length-1].systolic}/${bps[bps.length-1].diastolic}` : "—";
+
+    document.getElementById("s_workouts").textContent = wWeek.length;
+    document.getElementById("s_minutes").textContent = minutes;
+    document.getElementById("s_weight").textContent = lastWeight;
+    document.getElementById("s_bp").textContent = lastBP;
+
+    document.getElementById("dashHint").textContent =
+      currentView === "all" ? "Vue: tout le monde" : `Vue: ${names[currentView] || currentView}`;
+  }
+
+  function renderLists(){
+    const w = filterByView(localData.workouts).slice().reverse().slice(0, 30);
+    document.getElementById("w_list").innerHTML = w.length ? w.map(x=>`
+      <div class="item">
+        <div>
+          <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.duration} min • ${x.intensity}
+          <div class="muted">${formatDate(x.date)}</div>
+        </div>
+        <span class="pill">local</span>
+      </div>
+    `).join("") : `<div class="muted">Aucun workout.</div>`;
+
+    const m = filterByView(localData.meals).slice().reverse().slice(0, 30);
+    document.getElementById("m_list").innerHTML = m.length ? m.map(x=>`
+      <div class="item">
+        <div>
+          <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.time || ""}
+          <div class="muted">${x.description || ""}</div>
+          <div class="muted">${x.date || ""}</div>
+        </div>
+        <span class="pill">local</span>
+      </div>
+    `).join("") : `<div class="muted">Aucun repas.</div>`;
+
+    const wt = filterByView(localData.weight).slice().reverse().slice(0, 30);
+    document.getElementById("wt_list").innerHTML = wt.length ? wt.map(x=>`
+      <div class="item">
+        <div>
+          <b>${names[x.user] || x.user}</b> — ${x.value} kg
+          <div class="muted">${x.date || ""}</div>
+        </div>
+        <span class="pill">local</span>
+      </div>
+    `).join("") : `<div class="muted">Aucun poids.</div>`;
+
+    const bp = filterByView(bpData).slice().reverse().slice(0, 30);
+    document.getElementById("bp_list").innerHTML = bp.length ? bp.map(x=>`
+      <div class="item">
+        <div>
+          <b>${names[x.user] || x.user}</b> — ${x.systolic}/${x.diastolic} mmHg
+          ${x.heartRate ? ` • ${x.heartRate} bpm` : ""}
+          <div class="muted">${x.date || ""} • ${formatDate(x.timestamp || "")}</div>
+        </div>
+        <span class="pill">Google Sheet</span>
+      </div>
+    `).join("") : `<div class="muted">Aucun BP (sheet vide ou pas chargé).</div>`;
+  }
+
+  function renderAll(){
+    renderDashboard();
+    renderLists();
+  }
+
+  function persistLocal(){
+    localStorage.setItem("fittrack_local", JSON.stringify(localData));
+  }
+
+  function addWorkoutLocal(){
+    const user = document.getElementById("w_user").value;
+    const type = document.getElementById("w_type").value;
+    const duration = Number(document.getElementById("w_duration").value || 0);
+    const intensity = document.getElementById("w_intensity").value;
+    if(!type || !duration) return alert("Remplis Type + Durée.");
+    localData.workouts.push({id:Date.now()+"", user, type, duration, intensity, date:new Date().toISOString()});
+    persistLocal();
+    toast("Workout local ✅");
+    renderAll();
+  }
+
+  function addMealLocal(){
+    const user = document.getElementById("m_user").value;
+    const type = document.getElementById("m_type").value;
+    const time = document.getElementById("m_time").value;
+    const description = document.getElementById("m_desc").value;
+    if(!type || !description) return alert("Remplis Type + Description.");
+    localData.meals.push({id:Date.now()+"", user, type, time, description, date:new Date().toISOString().split("T")[0]});
+    persistLocal();
+    toast("Meal local ✅");
+    renderAll();
+  }
+
+  function addWeightLocal(){
+    const user = document.getElementById("wt_user").value;
+    const value = Number(document.getElementById("wt_value").value || 0);
+    const date = document.getElementById("wt_date").value || new Date().toISOString().split("T")[0];
+    if(!value) return alert("Remplis le poids.");
+    localData.weight.push({id:Date.now()+"", user, value, date, timestamp:new Date().toISOString()});
+    persistLocal();
+    toast("Poids local ✅");
+    renderAll();
+  }
+
+  async function addBP(){
+    try{
+      const payload = {
+        action: "bp_add",
+        user: document.getElementById("bp_user").value,
+        systolic: Number(document.getElementById("bp_sys").value || 0),
+        diastolic: Number(document.getElementById("bp_dia").value || 0),
+        heartRate: Number(document.getElementById("bp_hr").value || 0),
+        date: new Date().toISOString().split("T")[0],
+        timestamp: new Date().toISOString()
+      };
+      if(!payload.systolic || !payload.diastolic){
+        alert("Remplis systolic + diastolic.");
+        return;
+      }
+      const r = await apiPost(payload);
+      if(!r.ok){
+        toast("Erreur BP ❌\n" + JSON.stringify(r,null,2));
+        alert("Erreur: " + (r.error || "unknown"));
+        return;
+      }
+      toast("BP enregistré ✅");
+      await reloadAll();
+    }catch(e){
+      toast("Exception BP ❌\n" + String(e));
+      alert("Erreur technique: " + String(e));
+    }
+  }
+
+  async function reloadAll(){
+    toast("Chargement BP depuis Google Sheet…");
+    try{
+      const r = await apiGet("action=bp"); // IMPORTANT : ton API dit d’utiliser action=bp
+      if(!r.ok){
+        toast("Erreur load BP ❌\n" + JSON.stringify(r,null,2));
+        alert("Erreur API BP: " + (r.error || "unknown"));
+        return;
+      }
+      // Selon ton script, ça peut être rows ou data
+      bpData = r.rows || r.data || [];
+      toast("OK ✅ BP chargé (" + bpData.length + ")");
+      renderAll();
+    }catch(e){
+      toast("Erreur réseau ❌\n" + String(e));
+      alert("Erreur réseau/API: " + String(e));
+    }
+  }
+
+  (function boot(){
+    document.getElementById("apiLabel").textContent = API_URL;
+    fillUsers();
+    const now = new Date();
+    document.getElementById("m_time").value = now.toTimeString().slice(0,5);
+    document.getElementById("wt_date").value = now.toISOString().split("T")[0];
+    renderAll();
+    reloadAll();
+  })();
 </script>
 </body>
 </html>
