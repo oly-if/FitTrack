@@ -1,722 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>FitTrack Pro - Ultimate Health Tracker</title>
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <style>
- * { margin: 0; padding: 0; box-sizing: border-box; }
- :root {
- --primary: #667eea; --primary-dark: #5568d3; --secondary: #764ba2;
- --accent: #f093fb; --success: #10b981; --warning: #f59e0b;
- --danger: #ef4444; --text-dark: #1f2937; --text-light: #6b7280;
- --bg-light: #f9fafb; --border: #e5e7eb;
- }
- body {
- font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- min-height: 100vh; padding: 20px; color: var(--text-dark);
- }
- .container { max-width: 1400px; margin: 0 auto; }
- header {
- background: white; padding: 40px; border-radius: 24px;
- box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-bottom: 30px;
- text-align: center; border: 1px solid rgba(255,255,255,0.2);
- }
- .logo { font-size: 3em; margin-bottom: 10px; }
- h1 {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- -webkit-background-clip: text; -webkit-text-fill-color: transparent;
- background-clip: text; font-size: 2.8em; font-weight: 800;
- margin-bottom: 10px; letter-spacing: -1px;
- }
- .subtitle { color: var(--text-light); font-size: 1.2em; font-weight: 500; }
- .user-selector {
- display: flex; gap: 15px; justify-content: center;
- margin-top: 20px; flex-wrap: wrap;
- }
- .user-btn {
- padding: 12px 30px; border: 2px solid var(--border);
- background: white; border-radius: 12px; cursor: pointer;
- font-weight: 700; transition: all 0.3s ease; font-size: 1em;
- }
- .user-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
- .user-btn.active {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- color: white; border-color: var(--primary);
- }
- .modal {
- position: fixed; top: 0; left: 0; width: 100%; height: 100%;
- background: rgba(0,0,0,0.7); display: flex; align-items: center;
- justify-content: center; z-index: 1000; padding: 20px;
- }
- .modal-content {
- background: white; padding: 40px; border-radius: 24px;
- max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
- }
- .modal h2 { color: var(--primary); margin-bottom: 25px; font-size: 2em; }
- .tabs {
- display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap;
- background: white; padding: 15px; border-radius: 20px;
- box-shadow: 0 10px 40px rgba(0,0,0,0.1);
- }
- .tab-button {
- flex: 1; min-width: 120px; padding: 16px 20px; background: var(--bg-light);
- border: 2px solid transparent; border-radius: 14px; cursor: pointer;
- font-size: 1em; font-weight: 700; transition: all 0.3s ease;
- color: var(--text-light);
- }
- .tab-button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25); }
- .tab-button.active {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- color: white; border-color: var(--primary);
- }
- .tab-content { display: none; animation: fadeIn 0.4s ease; }
- .tab-content.active { display: block; }
- @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
- .card {
- background: white; padding: 35px; border-radius: 24px;
- box-shadow: 0 10px 40px rgba(0,0,0,0.1); margin-bottom: 25px;
- border: 1px solid var(--border); transition: all 0.3s ease;
- }
- .card:hover { box-shadow: 0 15px 50px rgba(0,0,0,0.15); }
- .card h2 {
- color: var(--text-dark); font-size: 1.6em; font-weight: 700;
- margin-bottom: 25px; display: flex; align-items: center; gap: 12px;
- }
- .stats-grid {
- display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
- gap: 20px; margin-bottom: 30px;
- }
- .stat-card {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- color: white; padding: 30px; border-radius: 20px; text-align: center;
- box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3); position: relative;
- overflow: hidden; transition: all 0.3s ease;
- }
- .stat-card.user1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
- .stat-card.user2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
- .stat-card::before {
- content: ''; position: absolute; top: -50%; right: -50%;
- width: 200%; height: 200%;
- background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
- }
- .stat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4); }
- .stat-icon { font-size: 2.5em; margin-bottom: 10px; opacity: 0.9; }
- .stat-value { font-size: 2.8em; font-weight: 800; margin-bottom: 8px; position: relative; z-index: 1; }
- .stat-label { font-size: 1.05em; opacity: 0.95; font-weight: 600; position: relative; z-index: 1; }
- .insight-box {
- background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
- color: white; padding: 30px; border-radius: 20px; margin-bottom: 25px;
- box-shadow: 0 10px 35px rgba(79, 172, 254, 0.3);
- }
- .insight-box h3 { font-size: 1.5em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
- .insight-item {
- background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px;
- margin-top: 12px; backdrop-filter: blur(10px);
- }
- .prediction-box {
- background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
- color: white; padding: 30px; border-radius: 20px; margin-bottom: 25px;
- box-shadow: 0 10px 35px rgba(67, 233, 123, 0.3);
- }
- .prediction-box h3 { font-size: 1.5em; margin-bottom: 15px; }
- .prediction-value { font-size: 2.5em; font-weight: 800; margin: 15px 0; }
- .form-group { margin-bottom: 24px; }
- label {
- display: block; margin-bottom: 10px; color: var(--text-dark);
- font-weight: 700; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.5px;
- }
- input, select, textarea {
- width: 100%; padding: 14px 18px; border: 2px solid var(--border);
- border-radius: 12px; font-size: 1.05em; transition: all 0.3s ease;
- font-family: inherit; background: var(--bg-light);
- }
- input:focus, select:focus, textarea:focus {
- outline: none; border-color: var(--primary); background: white;
- box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
- }
- .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
- .input-triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
- .btn {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- color: white; padding: 16px 32px; border: none; border-radius: 12px;
- font-size: 1.1em; font-weight: 700; cursor: pointer;
- transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
- width: 100%; margin-top: 10px; position: relative; overflow: hidden;
- }
- .btn::before {
- content: ''; position: absolute; top: 50%; left: 50%;
- width: 0; height: 0; border-radius: 50%;
- background: rgba(255,255,255,0.2);
- transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
- }
- .btn:hover::before { width: 300px; height: 300px; }
- .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); }
- .btn:active { transform: translateY(-1px); }
- .btn-delete {
- background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
- padding: 10px 20px; font-size: 0.9em; width: auto; margin-top: 0;
- }
- .btn-delete:hover { box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4); }
- .chart-container { position: relative; height: 320px; margin-bottom: 20px; }
- .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
- .entry {
- background: var(--bg-light); padding: 24px; border-radius: 16px;
- margin-bottom: 16px; border-left: 5px solid var(--primary);
- display: flex; justify-content: space-between; align-items: center;
- transition: all 0.3s ease;
- }
- .entry:hover { transform: translateX(8px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); background: white; }
- .entry-info { flex: 1; }
- .entry-title { font-size: 1.25em; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
- .entry-details { color: var(--text-light); font-size: 0.95em; line-height: 1.6; }
- .badge {
- display: inline-block; padding: 6px 14px; border-radius: 20px;
- font-size: 0.85em; font-weight: 700; margin-left: 10px;
- }
- .user-badge {
- background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
- color: white;
- }
- .user-badge.user2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
- .intensity-low { background: #d1fae5; color: #065f46; }
- .intensity-moderate { background: #fef3c7; color: #92400e; }
- .intensity-high { background: #fee2e2; color: #991b1b; }
- .bp-alert {
- background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
- color: white; padding: 20px; border-radius: 16px; margin-top: 20px;
- display: flex; align-items: center; gap: 15px;
- box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
- }
- .bp-alert.danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
- .bp-instructions {
- background: #e0e7ff; padding: 20px; border-radius: 16px;
- margin-bottom: 20px; border-left: 4px solid var(--primary);
- }
- .bp-instructions h4 { color: var(--primary); margin-bottom: 10px; font-size: 1.2em; }
- .bp-instructions ol { margin-left: 20px; color: var(--text-dark); }
- .bp-instructions li { margin: 8px 0; }
- .calorie-info {
- background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
- color: white; padding: 20px; border-radius: 16px; margin-top: 15px;
- display: flex; justify-content: space-between; align-items: center;
- box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
- }
- .calorie-main { font-size: 2em; font-weight: 800; }
- .macros { display: flex; gap: 20px; }
- .macro-item { text-align: center; }
- .macro-value { font-size: 1.3em; font-weight: 700; }
- .macro-label { font-size: 0.85em; opacity: 0.9; }
- .loading { text-align: center; padding: 40px; color: var(--primary); font-size: 1.2em; }
- .spinner {
- border: 4px solid var(--border); border-top: 4px solid var(--primary);
- border-radius: 50%; width: 40px; height: 40px;
- animation: spin 1s linear infinite; margin: 0 auto 15px;
- }
- @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
- .empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); }
- .empty-state-icon { font-size: 5em; margin-bottom: 20px; opacity: 0.5; }
- .time-interval {
- background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
- padding: 18px; border-radius: 14px; margin-top: 12px;
- border-left: 4px solid var(--warning); font-weight: 600;
- }
- .notification {
- position: fixed; bottom: 30px; right: 30px;
- background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
- color: white; padding: 20px 30px; border-radius: 16px;
- box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4);
- z-index: 999; display: none; animation: slideIn 0.5s ease;
- }
- @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
- .notification h4 { font-size: 1.2em; margin-bottom: 5px; }
- @media (max-width: 768px) {
- .two-column, .input-group, .input-triple { grid-template-columns: 1fr; }
- h1 { font-size: 2em; }
- .tab-button { min-width: 100px; font-size: 0.9em; padding: 14px 16px; }
- .stats-grid { grid-template-columns: repeat(2, 1fr); }
- .notification { bottom: 20px; right: 20px; left: 20px; }
- }
- </style>
+  <meta charset="UTF-8" />
+  <title>FitTrack – Blood Pressure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      max-width: 500px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    .entry {
+      background: #eef2ff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
- <div id="setupModal" class="modal" style="display: none;">
-  <div class="modal-content">
-   <h2>👋 Welcome to FitTrack Pro!</h2>
-   <form id="setupForm">
-    <div class="form-group">
-     <label>Your Name</label>
-     <input type="text" id="user1Name" placeholder="e.g., Sarah" required>
-    </div>
-    <div class="form-group">
-     <label>Your Sister's Name</label>
-     <input type="text" id="user2Name" placeholder="e.g., Michele" required>
-    </div>
-    <button type="submit" class="btn">Get Started!</button>
-   </form>
-  </div>
- </div>
 
- <div id="notification" class="notification">
-  <h4>🩺 Time to Check Blood Pressure!</h4>
-  <p>Sit down, rest for 10 minutes, then measure your blood pressure.</p>
- </div>
+<h1>🩺 FitTrack – Blood Pressure</h1>
 
- <div class="container">
-  <header>
-   <div class="logo">💪</div>
-   <h1>FitTrack Pro</h1>
-   <p class="subtitle">Ultimate Health & Fitness Tracker</p>
-   <div class="user-selector">
-    <button class="user-btn active" id="viewAll" onclick="switchUser('all')">📊 All Data</button>
-    <button class="user-btn" id="viewUser1" onclick="switchUser('user1')">👤 <span id="displayUser1">User 1</span></button>
-    <button class="user-btn" id="viewUser2" onclick="switchUser('user2')">👤 <span id="displayUser2">User 2</span></button>
-   </div>
-  </header>
+<div class="card">
+  <form id="bpForm">
+    <label>Utilisateur</label>
+    <select id="bpUser" required>
+      <option value="user1">User 1</option>
+      <option value="user2">User 2</option>
+    </select>
 
-  <div class="tabs">
-   <button class="tab-button active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-   <button class="tab-button" onclick="switchTab('workouts')">🏃 Workouts</button>
-   <button class="tab-button" onclick="switchTab('meals')">🍽️ Meals</button>
-   <button class="tab-button" onclick="switchTab('weight')">⚖️ Weight</button>
-   <button class="tab-button" onclick="switchTab('bp')">🩺 BP</button>
-  </div>
+    <label>Systolic (mmHg)</label>
+    <input type="number" id="bpSystolic" required min="70" max="250" />
 
-  <div id="dashboard" class="tab-content active">
-   <div class="insight-box" id="insightsBox">
-    <h3>🧠 AI Insights & Recommendations</h3>
-    <div id="insightsContent"></div>
-   </div>
-   <div class="prediction-box" id="predictionBox">
-    <h3>🔮 Weight Prediction</h3>
-    <div id="predictionContent"></div>
-   </div>
-   <div class="stats-grid" id="statsGrid"></div>
-  </div>
+    <label>Diastolic (mmHg)</label>
+    <input type="number" id="bpDiastolic" required min="40" max="150" />
 
-  <div id="workouts" class="tab-content">
-   <div class="card">
-    <h2>🏃 Log a Workout</h2>
-    <form id="workoutForm">
-     <div class="form-group">
-      <label>Who worked out?</label>
-      <select id="workoutUser" required>
-       <option value="user1" id="workoutUser1Opt">User 1</option>
-       <option value="user2" id="workoutUser2Opt">User 2</option>
-      </select>
-     </div>
-     <div class="input-group">
-      <div class="form-group">
-       <label>Exercise Type</label>
-       <select id="exerciseType" required>
-        <option value="">Select...</option>
-        <option value="Abs">🏋️ Abs</option>
-        <option value="Weights">💪 Weights</option>
-        <option value="Cycling">🚴 Cycling</option>
-        <option value="Elliptical">⚡ Elliptical</option>
-        <option value="Walking">🚶 Walking</option>
-       </select>
-      </div>
-      <div class="form-group">
-       <label>Duration (minutes)</label>
-       <input type="number" id="exerciseDuration" min="1" required>
-      </div>
-     </div>
-     <div class="form-group">
-      <label>Intensity</label>
-      <select id="exerciseIntensity" required>
-       <option value="Low">Low</option>
-       <option value="Moderate">Moderate</option>
-       <option value="High">High</option>
-      </select>
-     </div>
-     <button type="submit" class="btn">Save Workout</button>
-    </form>
-   </div>
-  </div>
+    <label>Heart Rate (bpm)</label>
+    <input type="number" id="bpHeartRate" min="40" max="200" />
 
-  <div id="meals" class="tab-content">
-   <div class="card">
-    <h2>🍽️ Log a Meal</h2>
-    <p style="background: #fef3c7; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-     ⚠️ <strong>Note:</strong> AI calorie estimation works only with window.storage API (Claude's feature).
-     This version uses localStorage for demo purposes.
-    </p>
-    <form id="mealForm">
-     <div class="form-group">
-      <label>Who ate?</label>
-      <select id="mealUser" required>
-       <option value="user1" id="mealUser1Opt">User 1</option>
-       <option value="user2" id="mealUser2Opt">User 2</option>
-      </select>
-     </div>
-     <div class="input-group">
-      <div class="form-group">
-       <label>Meal Type</label>
-       <select id="mealType" required>
-        <option value="">Select...</option>
-        <option value="Breakfast">🌅 Breakfast</option>
-        <option value="Lunch">🌞 Lunch</option>
-        <option value="Dinner">🌙 Dinner</option>
-        <option value="Snack">🍎 Snack</option>
-       </select>
-      </div>
-      <div class="form-group">
-       <label>Meal Time</label>
-       <input type="time" id="mealTime" required>
-      </div>
-     </div>
-     <div class="form-group">
-      <label>What did you eat?</label>
-      <textarea id="mealDescription" rows="4" placeholder="e.g., Grilled chicken, rice..." required></textarea>
-     </div>
-     <button type="submit" class="btn">Save Meal</button>
-    </form>
-   </div>
-  </div>
+    <button type="submit">💾 Enregistrer</button>
+  </form>
+</div>
 
-  <div id="weight" class="tab-content">
-   <div class="card">
-    <h2>⚖️ Log Your Weight</h2>
-    <form id="weightForm">
-     <div class="form-group">
-      <label>Who weighed?</label>
-      <select id="weightUser" required>
-       <option value="user1" id="weightUser1Opt">User 1</option>
-       <option value="user2" id="weightUser2Opt">User 2</option>
-      </select>
-     </div>
-     <div class="input-group">
-      <div class="form-group">
-       <label>Weight (kg)</label>
-       <input type="number" id="weightValue" step="0.1" min="30" max="300" required>
-      </div>
-      <div class="form-group">
-       <label>Date</label>
-       <input type="date" id="weightDate" required>
-      </div>
-     </div>
-     <button type="submit" class="btn">Save Weight Entry</button>
-    </form>
-   </div>
-  </div>
+<div class="card">
+  <h3>📊 Historique</h3>
+  <div id="bpList">Chargement…</div>
+</div>
 
-  <div id="bp" class="tab-content">
-   <div class="card">
-    <div class="bp-instructions">
-     <h4>📋 How to Measure Blood Pressure Correctly</h4>
-     <ol>
-      <li>Sit comfortably on a chair with back support</li>
-      <li>Rest for <strong>10 minutes</strong> without talking</li>
-      <li>Place your arm at heart level on a table</li>
-      <li>Measure at <strong>8:00 PM</strong> for consistency</li>
-     </ol>
-    </div>
-    <h2>🩺 Log Blood Pressure</h2>
-    <form id="bpForm">
-     <div class="form-group">
-      <label>Who measured?</label>
-      <select id="bpUser" required>
-       <option value="user1" id="bpUser1Opt">User 1</option>
-       <option value="user2" id="bpUser2Opt">User 2</option>
-      </select>
-     </div>
-     <div class="input-triple">
-      <div class="form-group">
-       <label>Systolic (mmHg)</label>
-       <input type="number" id="bpSystolic" min="70" max="250" placeholder="120" required>
-      </div>
-      <div class="form-group">
-       <label>Diastolic (mmHg)</label>
-       <input type="number" id="bpDiastolic" min="40" max="150" placeholder="80" required>
-      </div>
-      <div class="form-group">
-       <label>Heart Rate (bpm)</label>
-       <input type="number" id="bpHeartRate" min="40" max="200" placeholder="70">
-      </div>
-     </div>
-     <button type="submit" class="btn">Save Blood Pressure</button>
-    </form>
-   </div>
-  </div>
- </div>
+<script>
+/* ================================
+   CONFIG
+================================ */
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzSUQKE-bpzQ1H5iYD350DSFoqK55hb4Aip6PfDGz1wfrJ2I-DEWpaGe2hHI4T1bzZe5A/exec";
 
- <script>
- let exercises = [];
- let meals = [];
- let weights = [];
- let bloodPressures = [];
- let currentView = 'all';
- let userNames = { user1: 'User 1', user2: 'User 2' };
+/* ================================
+   STATE
+================================ */
+let bloodPressures = [];
 
- document.addEventListener('DOMContentLoaded', function() {
- checkSetup();
- loadFromLocalStorage();
- setupForms();
- updateDashboard();
- checkBPReminder();
- setInterval(checkBPReminder, 60000);
- });
+/* ================================
+   LOAD DATA FROM GOOGLE SHEETS
+================================ */
+async function loadBP() {
+  const res = await fetch(API_URL + "?action=bp");
+  const data = await res.json();
 
- function checkSetup() {
- const setup = localStorage.getItem('setup');
- if (!setup) {
- document.getElementById('setupModal').style.display = 'flex';
- } else {
- userNames = JSON.parse(setup);
- updateUserNames();
- }
- }
+  if (data.ok) {
+    bloodPressures = data.rows;
+    renderBP();
+  } else {
+    document.getElementById("bpList").innerText = "Erreur de chargement";
+  }
+}
 
- document.getElementById('setupForm').addEventListener('submit', function(e) {
- e.preventDefault();
- const user1 = document.getElementById('user1Name').value.trim();
- const user2 = document.getElementById('user2Name').value.trim();
- userNames = { user1: user1, user2: user2 };
- localStorage.setItem('setup', JSON.stringify(userNames));
- document.getElementById('setupModal').style.display = 'none';
- updateUserNames();
- });
+/* ================================
+   RENDER
+================================ */
+function renderBP() {
+  const container = document.getElementById("bpList");
+  container.innerHTML = "";
 
- function updateUserNames() {
- document.getElementById('displayUser1').textContent = userNames.user1;
- document.getElementById('displayUser2').textContent = userNames.user2;
- document.getElementById('workoutUser1Opt').textContent = userNames.user1;
- document.getElementById('workoutUser2Opt').textContent = userNames.user2;
- document.getElementById('mealUser1Opt').textContent = userNames.user1;
- document.getElementById('mealUser2Opt').textContent = userNames.user2;
- document.getElementById('weightUser1Opt').textContent = userNames.user1;
- document.getElementById('weightUser2Opt').textContent = userNames.user2;
- document.getElementById('bpUser1Opt').textContent = userNames.user1;
- document.getElementById('bpUser2Opt').textContent = userNames.user2;
- }
+  if (bloodPressures.length === 0) {
+    container.innerText = "Aucune donnée";
+    return;
+  }
 
- function switchUser(view) {
- currentView = view;
- document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('active'));
- event.target.classList.add('active');
- updateDashboard();
- }
+  bloodPressures
+    .slice()
+    .reverse()
+    .forEach(bp => {
+      const div = document.createElement("div");
+      div.className = "entry";
+      div.innerHTML = `
+        <strong>${bp.user}</strong><br>
+        ${bp.systolic}/${bp.diastolic} mmHg
+        ${bp.heartRate ? " – ❤️ " + bp.heartRate + " bpm" : ""}
+        <br>
+        <small>${bp.date || ""}</small>
+      `;
+      container.appendChild(div);
+    });
+}
 
- function switchTab(tabName) {
- document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
- document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
- document.getElementById(tabName).classList.add('active');
- event.target.classList.add('active');
- if (tabName === 'dashboard') updateDashboard();
- }
+/* ================================
+   SAVE BP TO GOOGLE SHEETS
+================================ */
+document.getElementById("bpForm").addEventListener("submit", async e => {
+  e.preventDefault();
 
- function setupForms() {
- const now = new Date();
- document.getElementById('mealTime').value = now.toTimeString().slice(0, 5);
- document.getElementById('weightDate').value = now.toISOString().split('T')[0];
+  const bp = {
+    action: "bp_add",
+    user: document.getElementById("bpUser").value,
+    systolic: document.getElementById("bpSystolic").value,
+    diastolic: document.getElementById("bpDiastolic").value,
+    heartRate: document.getElementById("bpHeartRate").value,
+    date: new Date().toISOString().split("T")[0],
+    timestamp: new Date().toISOString()
+  };
 
- document.getElementById('workoutForm').addEventListener('submit', function(e) {
- e.preventDefault();
- const workout = {
- id: Date.now().toString(),
- user: document.getElementById('workoutUser').value,
- type: document.getElementById('exerciseType').value,
- duration: parseInt(document.getElementById('exerciseDuration').value),
- intensity: document.getElementById('exerciseIntensity').value,
- date: new Date().toISOString()
- };
- exercises.push(workout);
- saveToLocalStorage();
- this.reset();
- alert('✅ Workout saved!');
- updateDashboard();
- });
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(bp)
+  });
 
- document.getElementById('mealForm').addEventListener('submit', function(e) {
- e.preventDefault();
- const meal = {
- id: Date.now().toString(),
- user: document.getElementById('mealUser').value,
- type: document.getElementById('mealType').value,
- time: document.getElementById('mealTime').value,
- description: document.getElementById('mealDescription').value,
- date: new Date().toISOString().split('T')[0],
- fullDate: new Date().toISOString()
- };
- meals.push(meal);
- saveToLocalStorage();
- this.reset();
- document.getElementById('mealTime').value = new Date().toTimeString().slice(0, 5);
- alert('✅ Meal saved!');
- updateDashboard();
- });
+  e.target.reset();
+  await loadBP();
+  alert("✅ Donnée enregistrée");
+});
 
- document.getElementById('weightForm').addEventListener('submit', function(e) {
- e.preventDefault();
- const weight = {
- id: Date.now().toString(),
- user: document.getElementById('weightUser').value,
- value: parseFloat(document.getElementById('weightValue').value),
- date: document.getElementById('weightDate').value,
- timestamp: new Date().toISOString()
- };
- weights.push(weight);
- saveToLocalStorage();
- this.reset();
- document.getElementById('weightDate').value = new Date().toISOString().split('T')[0];
- alert('✅ Weight saved!');
- updateDashboard();
- });
+/* ================================
+   INIT
+================================ */
+loadBP();
+</script>
 
- document.getElementById('bpForm').addEventListener('submit', function(e) {
- e.preventDefault();
- const systolic = parseInt(document.getElementById('bpSystolic').value);
- const diastolic = parseInt(document.getElementById('bpDiastolic').value);
- const bp = {
- id: Date.now().toString(),
- user: document.getElementById('bpUser').value,
- systolic: systolic,
- diastolic: diastolic,
- heartRate: parseInt(document.getElementById('bpHeartRate').value) || null,
- date: new Date().toISOString().split('T')[0],
- timestamp: new Date().toISOString()
- };
- bloodPressures.push(bp);
- saveToLocalStorage();
- this.reset();
-
- if (systolic >= 140 || diastolic >= 90) {
- alert('⚠️ High BP! Consult a doctor if this persists.');
- } else if (systolic < 90 || diastolic < 60) {
- alert('⚠️ Low BP! Monitor closely.');
- } else {
- alert('✅ Blood pressure saved! Normal range.');
- }
- updateDashboard();
- });
- }
-
- function saveToLocalStorage() {
- localStorage.setItem('exercises', JSON.stringify(exercises));
- localStorage.setItem('meals', JSON.stringify(meals));
- localStorage.setItem('weights', JSON.stringify(weights));
- localStorage.setItem('bloodPressures', JSON.stringify(bloodPressures));
- }
-
- function loadFromLocalStorage() {
- exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
- meals = JSON.parse(localStorage.getItem('meals') || '[]');
- weights = JSON.parse(localStorage.getItem('weights') || '[]');
- bloodPressures = JSON.parse(localStorage.getItem('bloodPressures') || '[]');
- }
-
- function filterData(data) {
- if (currentView === 'all') return data;
- return data.filter(item => item.user === currentView);
- }
-
- function updateDashboard() {
- const now = new Date();
- const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
- const filteredExercises = filterData(exercises);
- const filteredWeights = filterData(weights);
- const weekWorkouts = filteredExercises.filter(e => new Date(e.date) >= weekAgo);
- const totalMinutes = weekWorkouts.reduce((sum, e) => sum + e.duration, 0);
-
- let statsHtml = '';
- if (currentView === 'all') {
- ['user1', 'user2'].forEach(user => {
- const userWorkouts = exercises.filter(e => e.user === user && new Date(e.date) >= weekAgo);
- statsHtml += `
- <div class="stat-card ${user}">
- <div class="stat-icon">👤</div>
- <div class="stat-value">${userNames[user]}</div>
- <div class="stat-label">${userWorkouts.length} workouts</div>
- </div>
- `;
- });
- } else {
- const currentWeight = filteredWeights.length > 0 ? filteredWeights[filteredWeights.length - 1].value : '-';
- statsHtml = `
- <div class="stat-card">
- <div class="stat-icon">🏋️</div>
- <div class="stat-value">${weekWorkouts.length}</div>
- <div class="stat-label">Workouts This Week</div>
- </div>
- <div class="stat-card">
- <div class="stat-icon">⏱️</div>
- <div class="stat-value">${totalMinutes}</div>
- <div class="stat-label">Active Minutes</div>
- </div>
- <div class="stat-card">
- <div class="stat-icon">⚖️</div>
- <div class="stat-value">${currentWeight}</div>
- <div class="stat-label">Current Weight (kg)</div>
- </div>
- `;
- }
- document.getElementById('statsGrid').innerHTML = statsHtml;
- generateInsights();
- generatePrediction();
- }
-
- function generateInsights() {
- const now = new Date();
- const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
- const filteredExercises = filterData(exercises).filter(e => new Date(e.date) >= weekAgo);
- const filteredWeights = filterData(weights);
-
- let insights = [];
- if (filteredExercises.length >= 3) {
- insights.push(`Great job! ${filteredExercises.length} workouts this week! 💪`);
- } else if (filteredExercises.length > 0) {
- insights.push(`You logged ${filteredExercises.length} workout(s). Aim for 3-4 per week!`);
- } else {
- insights.push(`No workouts this week. Start small - even 15 minutes counts! 🏃`);
- }
-
- if (filteredWeights.length >= 2) {
- const recent = filteredWeights.slice(-5);
- const trend = recent[recent.length - 1].value - recent[0].value;
- if (Math.abs(trend) > 0.5) {
- insights.push(`Weight ${trend > 0 ? 'increased' : 'decreased'} by ${Math.abs(trend).toFixed(1)}kg! ${trend < 0 ? '🎉' : ''}`);
- }
- }
-
- const htmlStr = insights.map(i => `<div class="insight-item">${i}</div>`).join('');
- document.getElementById('insightsContent').innerHTML = htmlStr || '<div class="insight-item">Start logging to see insights!</div>';
- }
-
- function generatePrediction() {
- const filteredWeights = filterData(weights);
- if (filteredWeights.length < 2) {
- document.getElementById('predictionContent').innerHTML = '<p>Log at least 2 weight entries to see predictions.</p>';
- return;
- }
- const recent = filteredWeights.slice(-10);
- const weightChange = recent[recent.length - 1].value - recent[0].value;
- const days = Math.max(1, (new Date(recent[recent.length - 1].date) - new Date(recent[0].date)) / (1000 * 60 * 60 * 24));
- const dailyChange = weightChange / days;
- const predictedChange = dailyChange * 30;
- const predicted = recent[recent.length - 1].value + predictedChange;
-
- let message = '';
- if (Math.abs(predictedChange) < 0.5) message = 'maintaining current weight';
- else if (predictedChange < 0) message = `lose ${Math.abs(predictedChange).toFixed(1)}kg`;
- else message = `gain ${predictedChange.toFixed(1)}kg`;
-
- document.getElementById('predictionContent').innerHTML = `
- <p>Based on your recent trends:</p>
- <div class="prediction-value">${predicted.toFixed(1)} kg</div>
- <p>Predicted weight in 30 days (you may ${message})</p>
- `;
- }
-
- function checkBPReminder() {
- const now = new Date();
- if (now.getHours() === 20 && now.getMinutes() === 0) {
- document.getElementById('notification').style.display = 'block';
- setTimeout(() => document.getElementById('notification').style.display = 'none', 10000);
- }
- }
- </script>
 </body>
 </html>
