@@ -4,181 +4,149 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FitTrack Pro</title>
+
   <style>
-    :root{
-      --bg:#0f172a;
-      --card:#0b1224;
-      --muted:#94a3b8;
-      --text:#e2e8f0;
-      --line:#1f2a44;
-      --primary:#6366f1;
-      --primary2:#8b5cf6;
-      --danger:#ef4444;
-      --ok:#22c55e;
-      --warn:#f59e0b;
-    }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, #1d2b6b 0%, var(--bg) 55%);
-      color:var(--text);
-      padding:20px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background: radial-gradient(circle at 20% 10%, #1f2a44, #070a13 60%);
+      color:#e5e7eb;
     }
-    .container{max-width:1100px;margin:0 auto}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
     header{
-      background: rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:18px 18px;border:1px solid rgba(148,163,184,.25);
+      background: rgba(2,6,23,.6);
       border-radius:18px;
-      padding:18px 18px;
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      backdrop-filter: blur(8px);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      margin-bottom:16px;
     }
-    .brand{display:flex;align-items:center;gap:12px}
+    .brand{display:flex;gap:12px;align-items:center}
     .logo{
-      width:44px;height:44px;border-radius:14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      display:grid;place-items:center;font-weight:900;
-      box-shadow: 0 14px 40px rgba(99,102,241,0.25);
+      width:48px;height:48px;border-radius:14px;
+      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;
+      box-shadow:0 10px 30px rgba(79,70,229,.35);
     }
     h1{margin:0;font-size:18px}
-    .sub{color:var(--muted);font-size:13px;margin-top:2px}
-    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .pill{
-      padding:8px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      color:var(--muted);
-      font-size:12px;
-    }
+    .subtitle{opacity:.8;font-size:13px;margin-top:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .btn{
-      border:0;
-      padding:10px 12px;
-      border-radius:12px;
-      color:white;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      cursor:pointer;
+      border:none;cursor:pointer;
+      padding:10px 12px;border-radius:12px;
+      background: rgba(148,163,184,.12);
+      color:#e5e7eb;
+      border:1px solid rgba(148,163,184,.25);
       font-weight:700;
     }
-    .btn.secondary{
-      background: rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.10);
-      color:var(--text);
-    }
-    .btn.danger{
-      background: linear-gradient(135deg, var(--danger), #b91c1c);
+    .btn.primary{
+      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+      border: none;
+      box-shadow:0 10px 25px rgba(79,70,229,.25);
     }
     .grid{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:16px;
-      margin-top:16px;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
     }
-    @media(max-width:920px){.grid{grid-template-columns:1fr}}
-    .card{
-      background: rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:16px;
-      backdrop-filter: blur(8px);
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
     }
+
     .tabs{
-      display:flex;gap:8px;flex-wrap:wrap;
-      margin-top:14px;
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin:14px 0 14px;
     }
     .tab{
       padding:10px 12px;border-radius:12px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      color:var(--muted);
-      cursor:pointer;font-weight:700;font-size:13px;
+      background: rgba(2,6,23,.55);
+      border:1px solid rgba(148,163,184,.25);
+      cursor:pointer;font-weight:800;font-size:13px;
+      opacity:.85;
     }
     .tab.active{
-      background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(139,92,246,0.25));
-      color:var(--text);
-      border-color: rgba(99,102,241,0.45);
+      background: rgba(79,70,229,.22);
+      border-color: rgba(79,70,229,.55);
+      opacity:1;
     }
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .row > *{flex:1}
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    input, select, textarea{
-      width:100%;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.25);
-      color:var(--text);
-      outline:none;
-    }
-    textarea{min-height:92px;resize:vertical}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
-    @media(max-width:920px){.kpis{grid-template-columns:repeat(2,1fr)}}
-    .kpi{
-      padding:14px;border-radius:16px;
-      border:1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.22);
-    }
-    .kpi .t{color:var(--muted);font-size:12px}
-    .kpi .v{font-size:22px;font-weight:900;margin-top:6px}
-    .list{margin-top:10px;display:flex;flex-direction:column;gap:10px}
-    .item{
-      padding:12px;border-radius:14px;
-      border:1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.18);
-      display:flex;justify-content:space-between;gap:10px;
-    }
-    .item .left{min-width:0}
-    .item .title{font-weight:900}
-    .item .meta{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.4}
-    .badge{
-      font-size:12px;font-weight:800;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.04);
-      height:fit-content;
-      white-space:nowrap;
-    }
-    .badge.ok{border-color: rgba(34,197,94,0.4); color:#bbf7d0}
-    .badge.warn{border-color: rgba(245,158,11,0.45); color:#fde68a}
-    .badge.danger{border-color: rgba(239,68,68,0.45); color:#fecaca}
-    .note{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.08);
-      color:var(--muted);
-      font-size:12px;
-      background: rgba(0,0,0,0.18);
-    }
-    .modal{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,0.66);
-      display:none; align-items:center; justify-content:center;
-      padding:18px; z-index:9999;
-    }
-    .modal .box{
-      width: min(520px, 100%);
-      background: rgba(15,23,42,0.95);
-      border:1px solid rgba(255,255,255,0.10);
+
+    .card{
+      background: rgba(2,6,23,.60);
+      border:1px solid rgba(148,163,184,.25);
       border-radius:18px;
       padding:16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
     }
-    .modal h2{margin:0 0 6px;font-size:18px}
-    .modal p{margin:0 0 12px;color:var(--muted);font-size:13px}
-    .footerbtns{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
-    .small{font-size:12px;color:var(--muted)}
-    .error{
-      border:1px solid rgba(239,68,68,0.35);
-      background: rgba(239,68,68,0.10);
-      color:#fecaca;
-      padding:10px 12px;border-radius:14px;margin-top:10px;font-size:12px;
+    .card h2{
+      margin:0 0 10px;
+      font-size:15px;
+      display:flex;align-items:center;gap:8px
+    }
+    .muted{opacity:.75;font-size:13px;line-height:1.4}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .field{flex:1;min-width:160px}
+    label{display:block;margin:10px 0 6px;font-weight:800;font-size:12px;opacity:.9;text-transform:uppercase;letter-spacing:.4px}
+    input,select,textarea{
+      width:100%;
+      padding:10px 12px;border-radius:12px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(148,163,184,.25);
+      color:#e5e7eb;
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 980px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    .stat{
+      padding:14px;border-radius:16px;
+      background: rgba(148,163,184,.10);
+      border:1px solid rgba(148,163,184,.18);
+    }
+    .stat .k{font-size:12px;opacity:.78;font-weight:800}
+    .stat .v{font-size:22px;font-weight:900;margin-top:6px}
+
+    .list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .item{
+      padding:12px;border-radius:14px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(148,163,184,.20);
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+      font-size:13px;
+    }
+    .item b{font-size:13px}
+    .pill{
+      padding:4px 8px;border-radius:999px;
+      background: rgba(79,70,229,.22);
+      border:1px solid rgba(79,70,229,.45);
+      font-size:12px;font-weight:800;white-space:nowrap
+    }
+
+    .hidden{display:none !important}
+
+    .toast{
+      position:fixed;bottom:18px;right:18px;left:18px;
+      max-width:720px;margin:0 auto;
+      background: rgba(15,23,42,.92);
+      border:1px solid rgba(148,163,184,.25);
+      color:#e5e7eb;
+      padding:12px 14px;border-radius:14px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
       display:none;
     }
+    .toast.show{display:block}
   </style>
 </head>
+
 <body>
   <div class="container">
 
@@ -187,686 +155,526 @@
         <div class="logo">💪</div>
         <div>
           <h1>FitTrack Pro</h1>
-          <div class="sub">App partagée (toi + ta sœur) — sauvegarde dans Google Sheets</div>
+          <div class="subtitle">App partagée — sauvegarde dans Google Sheets (Workouts / Meals / Weight / BP)</div>
         </div>
       </div>
-      <div class="right">
-        <div class="pill" id="apiStatus">API: …</div>
-        <button class="btn secondary" id="btnNames">👤 Noms</button>
-        <button class="btn secondary" id="btnRefresh">↻ Recharger</button>
+
+      <div class="actions">
+        <button class="btn" onclick="openNames()">👤 Noms</button>
+        <button class="btn" onclick="reloadAll()">🔄 Recharger</button>
+        <button class="btn primary" onclick="setApi()">🔗 API</button>
       </div>
     </header>
 
-    <div class="tabs">
-      <button class="tab active" data-tab="dash">📊 Dashboard</button>
-      <button class="tab" data-tab="workouts">🏃 Workouts</button>
-      <button class="tab" data-tab="meals">🍽️ Meals</button>
-      <button class="tab" data-tab="weight">⚖️ Weight</button>
-      <button class="tab" data-tab="bp">🩺 BP</button>
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="dashboard" onclick="showTab('dashboard')">📊 Dashboard</div>
+      <div class="tab" data-tab="workouts" onclick="showTab('workouts')">🏃 Workouts</div>
+      <div class="tab" data-tab="meals" onclick="showTab('meals')">🍽️ Meals</div>
+      <div class="tab" data-tab="weight" onclick="showTab('weight')">⚖️ Weight</div>
+      <div class="tab" data-tab="bp" onclick="showTab('bp')">🩺 BP</div>
     </div>
 
     <div class="grid">
-      <div class="card" id="leftCard">
-        <!-- Dash -->
-        <div class="view" id="view-dash">
-          <div class="kpis">
-            <div class="kpi"><div class="t">Workouts (7 jours)</div><div class="v" id="kpiWorkouts">0</div></div>
-            <div class="kpi"><div class="t">Minutes (7 jours)</div><div class="v" id="kpiMinutes">0</div></div>
-            <div class="kpi"><div class="t">Dernier poids</div><div class="v" id="kpiWeight">—</div></div>
-            <div class="kpi"><div class="t">Dernier BP</div><div class="v" id="kpiBP">—</div></div>
+      <div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="card">
+          <h2>📊 Dashboard</h2>
+          <div class="muted" id="dashHint">Chargement…</div>
+          <div class="stats">
+            <div class="stat"><div class="k">Workouts (7 jours)</div><div class="v" id="s_workouts">—</div></div>
+            <div class="stat"><div class="k">Minutes (7 jours)</div><div class="v" id="s_minutes">—</div></div>
+            <div class="stat"><div class="k">Dernier poids</div><div class="v" id="s_weight">—</div></div>
+            <div class="stat"><div class="k">Dernier BP</div><div class="v" id="s_bp">—</div></div>
           </div>
-          <div class="note">
-            Si un onglet affiche “Action inconnue”, ton Apps Script actuel ne gère pas encore cette action.
-            (BP marche si ton script a déjà <code>action=bp</code> et <code>bp_add</code>).
-          </div>
-          <div class="error" id="dashErr"></div>
         </div>
 
-        <!-- Workouts -->
-        <div class="view" id="view-workouts" style="display:none">
-          <h3 style="margin:0 0 6px">🏃 Log a workout</h3>
+        <!-- WORKOUTS -->
+        <div id="workouts" class="card hidden">
+          <h2>🏃 Log a Workout</h2>
+
           <div class="row">
-            <div>
-              <label>Qui ?</label>
-              <select id="wUser"></select>
+            <div class="field">
+              <label>Utilisateur</label>
+              <select id="w_user"></select>
             </div>
-            <div>
+            <div class="field">
               <label>Type</label>
-              <select id="wType">
-                <option>Walking</option><option>Cycling</option><option>Weights</option>
-                <option>Abs</option><option>Elliptical</option><option>Other</option>
+              <select id="w_type">
+                <option value="">Choisir…</option>
+                <option>Abs</option>
+                <option>Weights</option>
+                <option>Cycling</option>
+                <option>Elliptical</option>
+                <option>Walking</option>
               </select>
             </div>
-          </div>
-          <div class="row">
-            <div>
+            <div class="field">
               <label>Durée (minutes)</label>
-              <input type="number" id="wDuration" min="1" required />
+              <input id="w_duration" type="number" min="1" />
             </div>
-            <div>
+            <div class="field">
               <label>Intensité</label>
-              <select id="wIntensity">
-                <option>Low</option><option>Moderate</option><option>High</option>
+              <select id="w_intensity">
+                <option>Low</option>
+                <option>Moderate</option>
+                <option>High</option>
               </select>
             </div>
           </div>
-          <button class="btn" id="btnAddWorkout">💾 Save workout</button>
-          <div class="error" id="workoutErr"></div>
 
-          <h3 style="margin:16px 0 6px">Historique</h3>
-          <div class="list" id="workoutList"></div>
+          <button class="btn primary" onclick="addWorkout()">✅ Enregistrer</button>
+
+          <h2 style="margin-top:16px;">📜 Historique</h2>
+          <div class="list" id="w_list"></div>
         </div>
 
-        <!-- Meals -->
-        <div class="view" id="view-meals" style="display:none">
-          <h3 style="margin:0 0 6px">🍽️ Log a meal</h3>
+        <!-- MEALS -->
+        <div id="meals" class="card hidden">
+          <h2>🍽️ Log a Meal</h2>
+
           <div class="row">
-            <div>
-              <label>Qui ?</label>
-              <select id="mUser"></select>
+            <div class="field">
+              <label>Utilisateur</label>
+              <select id="m_user"></select>
             </div>
-            <div>
+            <div class="field">
               <label>Type</label>
-              <select id="mType">
-                <option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option>
+              <select id="m_type">
+                <option value="">Choisir…</option>
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Dinner</option>
+                <option>Snack</option>
               </select>
             </div>
-          </div>
-          <div class="row">
-            <div>
+            <div class="field">
               <label>Heure</label>
-              <input type="time" id="mTime" />
-            </div>
-            <div>
-              <label>Date</label>
-              <input type="date" id="mDate" />
+              <input id="m_time" type="time" />
             </div>
           </div>
-          <label>Description</label>
-          <textarea id="mDesc" placeholder="Ex: poulet, riz, salade..."></textarea>
-          <button class="btn" id="btnAddMeal">💾 Save meal</button>
-          <div class="error" id="mealErr"></div>
 
-          <h3 style="margin:16px 0 6px">Historique</h3>
-          <div class="list" id="mealList"></div>
+          <label>Description</label>
+          <textarea id="m_desc" placeholder="Ex: poulet + riz + salade…"></textarea>
+
+          <button class="btn primary" onclick="addMeal()">✅ Enregistrer</button>
+
+          <h2 style="margin-top:16px;">📜 Historique</h2>
+          <div class="list" id="m_list"></div>
         </div>
 
-        <!-- Weight -->
-        <div class="view" id="view-weight" style="display:none">
-          <h3 style="margin:0 0 6px">⚖️ Log weight</h3>
+        <!-- WEIGHT -->
+        <div id="weight" class="card hidden">
+          <h2>⚖️ Log Weight</h2>
+
           <div class="row">
-            <div>
-              <label>Qui ?</label>
-              <select id="weUser"></select>
+            <div class="field">
+              <label>Utilisateur</label>
+              <select id="wt_user"></select>
             </div>
-            <div>
+            <div class="field">
               <label>Poids (kg)</label>
-              <input type="number" id="weValue" step="0.1" min="30" max="400" />
+              <input id="wt_value" type="number" step="0.1" min="30" max="300" />
+            </div>
+            <div class="field">
+              <label>Date</label>
+              <input id="wt_date" type="date" />
             </div>
           </div>
-          <label>Date</label>
-          <input type="date" id="weDate" />
-          <button class="btn" id="btnAddWeight">💾 Save weight</button>
-          <div class="error" id="weightErr"></div>
 
-          <h3 style="margin:16px 0 6px">Historique</h3>
-          <div class="list" id="weightList"></div>
+          <button class="btn primary" onclick="addWeight()">✅ Enregistrer</button>
+
+          <h2 style="margin-top:16px;">📜 Historique</h2>
+          <div class="list" id="wt_list"></div>
         </div>
 
         <!-- BP -->
-        <div class="view" id="view-bp" style="display:none">
-          <h3 style="margin:0 0 6px">🩺 Log blood pressure</h3>
+        <div id="bp" class="card hidden">
+          <h2>🩺 Log Blood Pressure</h2>
+
           <div class="row">
-            <div>
-              <label>Qui ?</label>
-              <select id="bpUser"></select>
+            <div class="field">
+              <label>Utilisateur</label>
+              <select id="bp_user"></select>
             </div>
-            <div>
-              <label>Date</label>
-              <input type="date" id="bpDate" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
+            <div class="field">
               <label>Systolic</label>
-              <input type="number" id="bpSys" min="70" max="250" />
+              <input id="bp_sys" type="number" min="70" max="250" />
             </div>
-            <div>
+            <div class="field">
               <label>Diastolic</label>
-              <input type="number" id="bpDia" min="40" max="150" />
+              <input id="bp_dia" type="number" min="40" max="150" />
+            </div>
+            <div class="field">
+              <label>Heart Rate</label>
+              <input id="bp_hr" type="number" min="40" max="200" />
             </div>
           </div>
-          <label>Heart rate (optionnel)</label>
-          <input type="number" id="bpHr" min="40" max="220" />
-          <button class="btn" id="btnAddBP">💾 Save BP</button>
-          <div class="error" id="bpErr"></div>
 
-          <h3 style="margin:16px 0 6px">Historique</h3>
-          <div class="list" id="bpList"></div>
+          <button class="btn primary" onclick="addBP()">✅ Enregistrer</button>
+
+          <h2 style="margin-top:16px;">📜 Historique</h2>
+          <div class="list" id="bp_list"></div>
         </div>
+
       </div>
 
+      <!-- SIDE PANEL -->
       <div class="card">
-        <h3 style="margin:0 0 6px">👥 Vue</h3>
-        <div class="row">
-          <div>
-            <label>Afficher</label>
-            <select id="viewUser"></select>
-          </div>
-          <div style="flex:0.7">
-            <label>&nbsp;</label>
-            <button class="btn secondary" id="btnClearLocal">Reset local</button>
-          </div>
+        <h2>👥 Vue</h2>
+
+        <label>Afficher</label>
+        <select id="viewUser" onchange="applyView()"></select>
+
+        <div class="muted" style="margin-top:10px;">
+          Astuce : “Recharger” relit Google Sheets.
         </div>
-        <div class="note">
-          <b>Astuce :</b> “Reset local” efface seulement la mémoire du navigateur.  
-          Les données dans Google Sheets ne bougent pas.
+
+        <div class="muted" style="margin-top:10px;">
+          Si tu vois “Sheet not found”, c’est le <b>nom exact</b> de l’onglet (BP vs bp).
         </div>
-        <div class="note small" id="debugBox"></div>
+
+        <div class="muted" style="margin-top:10px;">
+          API actuelle : <span id="apiLabel" style="font-weight:900;"></span>
+        </div>
+
+        <button class="btn" style="margin-top:12px;" onclick="resetLocal()">🧹 Reset local</button>
       </div>
     </div>
 
   </div>
 
-  <!-- Modal noms -->
-  <div class="modal" id="namesModal">
-    <div class="box">
-      <h2>👤 Noms des 2 personnes</h2>
-      <p>Ces noms s’affichent partout dans l’appli (et peuvent être sauvegardés dans Google Sheets si ton backend le gère).</p>
-      <label>Nom 1</label>
-      <input id="name1" />
-      <label>Nom 2</label>
-      <input id="name2" />
-      <div class="footerbtns">
-        <button class="btn secondary" id="btnCancelNames">Annuler</button>
-        <button class="btn" id="btnSaveNames">Enregistrer</button>
-      </div>
-      <div class="note small">Si ton Apps Script ne gère pas Setup, ce sera sauvegardé en local seulement.</div>
-    </div>
-  </div>
+  <div class="toast" id="toast"></div>
 
 <script>
-/* ===============================
-   CONFIG — TON LIEN
-================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbzSUQKE-bpzQ1H5iYD350DSFoqK55hb4Aip6PfDGz1wfrJ2I-DEWpaGe2hHI4T1bzZe5A/exec";
+/** ========= CONFIG ========= **/
+const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwvUseBbPVOq2gpXxkZftqh3XaDXNZQ_RxHCChx1TZG8ibxC9XwtDj1rnWIN-I6zVsdVw/exec";
+let API_URL = localStorage.getItem("fittrack_api") || DEFAULT_API;
 
-/* ===============================
-   STATE
-================================ */
-let setup = { user1: "User 1", user2: "User 2" };
-let currentUserView = "all";
+// feuilles
+// IMPORTANT : ton onglet est BP (majuscule). On essaie BP puis fallback bp.
+const SHEETS = {
+  workouts: "workouts",
+  meals: "meals",
+  weight: "weight",
+  bp: "BP"   // on veut BP
+};
+const SHEET_FALLBACK = { bp: "bp" };
 
-let dataBP = [];
-let dataWorkouts = [];
-let dataMeals = [];
-let dataWeight = [];
+/** ========= STATE ========= **/
+let names = JSON.parse(localStorage.getItem("fittrack_names") || '{"user1":"oly","user2":"sister"}');
+let currentView = localStorage.getItem("fittrack_view") || "all";
 
-/* ===============================
-   HELPERS
-================================ */
-const $ = (id) => document.getElementById(id);
+let data = {
+  workouts: [],
+  meals: [],
+  weight: [],
+  bp: []
+};
 
-function todayISO(){
-  return new Date().toISOString().split("T")[0];
-}
-function isoNow(){
-  return new Date().toISOString();
-}
-function showErr(el, msg){
-  el.style.display = msg ? "block" : "none";
-  el.textContent = msg || "";
-}
-function safeNumber(v){
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2800);
 }
 
-// fetch helper: accept JSON OR detect HTML (Google auth pages)
-async function apiGet(query){
-  const res = await fetch(API_URL + query, { method:"GET" });
-  const text = await res.text();
-  if (text.trim().startsWith("<")) {
-    return { ok:false, error:"Google renvoie une page HTML (autorisation / accès). Ouvre l’URL /exec dans ton navigateur et autorise, puis redeploy 'Anyone'." };
-  }
-  try { return JSON.parse(text); } catch(e){ return { ok:false, error:"Réponse non-JSON: " + text.slice(0,120) }; }
+function showTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelector(`.tab[data-tab="${id}"]`).classList.add("active");
+
+  ["dashboard","workouts","meals","weight","bp"].forEach(x=>{
+    document.getElementById(x).classList.toggle("hidden", x !== id);
+  });
 }
+
+/** ========= UI INIT ========= **/
+function fillUsers(){
+  const selects = ["w_user","m_user","wt_user","bp_user","viewUser"];
+  selects.forEach(id=>{
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+    if(id === "viewUser"){
+      el.insertAdjacentHTML("beforeend", `<option value="all">📊 Tout</option>`);
+    }
+    el.insertAdjacentHTML("beforeend", `<option value="user1">${names.user1}</option>`);
+    el.insertAdjacentHTML("beforeend", `<option value="user2">${names.user2}</option>`);
+  });
+
+  document.getElementById("viewUser").value = currentView;
+}
+
+function applyView(){
+  currentView = document.getElementById("viewUser").value;
+  localStorage.setItem("fittrack_view", currentView);
+  renderAll();
+}
+
+function openNames(){
+  const u1 = prompt("Nom User 1 :", names.user1);
+  if(u1 === null) return;
+  const u2 = prompt("Nom User 2 :", names.user2);
+  if(u2 === null) return;
+  names = {user1: u1.trim() || "user1", user2: u2.trim() || "user2"};
+  localStorage.setItem("fittrack_names", JSON.stringify(names));
+  fillUsers();
+  toast("Noms enregistrés ✅");
+  renderAll();
+}
+
+function setApi(){
+  const u = prompt("Colle ton URL Apps Script /exec :", API_URL);
+  if(!u) return;
+  API_URL = u.trim();
+  localStorage.setItem("fittrack_api", API_URL);
+  document.getElementById("apiLabel").textContent = API_URL;
+  toast("API mise à jour ✅");
+  reloadAll();
+}
+
+function resetLocal(){
+  if(!confirm("Reset local (noms + cache) ?")) return;
+  localStorage.removeItem("fittrack_names");
+  localStorage.removeItem("fittrack_cache");
+  localStorage.removeItem("fittrack_view");
+  names = {user1:"oly", user2:"sister"};
+  currentView = "all";
+  fillUsers();
+  toast("Reset local ✅");
+  reloadAll();
+}
+
+/** ========= API HELPERS ========= **/
+async function apiGet(params){
+  const res = await fetch(API_URL + "?" + params, { method:"GET" });
+  return await res.json();
+}
+
 async function apiPost(payload){
   const res = await fetch(API_URL, {
     method:"POST",
     headers:{ "Content-Type":"text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   });
-  const text = await res.text();
-  if (text.trim().startsWith("<")) {
-    return { ok:false, error:"Google renvoie une page HTML (autorisation / accès). Redeploy 'Anyone'." };
+  return await res.json();
+}
+
+// liste avec fallback pour BP/bp
+async function listSheet(kind){
+  const sheet = SHEETS[kind];
+  let r = await apiGet(`action=list&sheet=${encodeURIComponent(sheet)}`);
+  if(r && r.ok) return r;
+
+  // fallback si "Sheet not found"
+  const fb = SHEET_FALLBACK[kind];
+  if(fb){
+    const r2 = await apiGet(`action=list&sheet=${encodeURIComponent(fb)}`);
+    if(r2 && r2.ok) return r2;
   }
-  try { return JSON.parse(text); } catch(e){ return { ok:false, error:"Réponse non-JSON: " + text.slice(0,120) }; }
+  return r; // renvoie l'erreur originale
 }
 
-function filterByUser(arr){
-  if (currentUserView === "all") return arr;
-  // currentUserView expected "user1" or "user2"
-  return arr.filter(x => x.user === currentUserView);
+/** ========= LOAD / RENDER ========= **/
+function filterByView(arr){
+  if(currentView === "all") return arr;
+  return arr.filter(x => x.user === currentView);
 }
 
-function setApiStatus(ok, msg){
-  const el = $("apiStatus");
-  el.textContent = ok ? "API: OK" : "API: KO";
-  el.style.borderColor = ok ? "rgba(34,197,94,0.4)" : "rgba(239,68,68,0.4)";
-  el.style.color = ok ? "#bbf7d0" : "#fecaca";
-  $("debugBox").textContent = msg || "";
-}
-
-/* ===============================
-   UI INIT
-================================ */
-function refreshUserSelectors(){
-  const options = `
-    <option value="all">📊 Tout</option>
-    <option value="user1">👤 ${setup.user1}</option>
-    <option value="user2">👤 ${setup.user2}</option>
-  `;
-  $("viewUser").innerHTML = options;
-
-  const u = `
-    <option value="user1">${setup.user1}</option>
-    <option value="user2">${setup.user2}</option>
-  `;
-  $("wUser").innerHTML = u;
-  $("mUser").innerHTML = u;
-  $("weUser").innerHTML = u;
-  $("bpUser").innerHTML = u;
-}
-
-function switchTab(name){
-  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
-  document.querySelectorAll(".view").forEach(v => v.style.display = "none");
-  $("view-" + name).style.display = "block";
-  if (name === "dash") renderDashboard();
-}
-
-document.querySelectorAll(".tab").forEach(b => {
-  b.addEventListener("click", () => switchTab(b.dataset.tab));
-});
-
-/* ===============================
-   LOAD / SAVE setup (names)
-================================ */
-function loadSetupLocal(){
+function formatDate(d){
   try{
-    const s = JSON.parse(localStorage.getItem("fittrack_setup") || "null");
-    if (s && s.user1 && s.user2) setup = s;
-  }catch{}
+    const x = new Date(d);
+    if(String(x) === "Invalid Date") return d;
+    return x.toLocaleString();
+  }catch(e){ return d; }
 }
 
-async function loadSetupRemoteIfPossible(){
-  // If backend supports it: GET ?action=setup_get
-  const r = await apiGet("?action=setup_get");
-  if (r && r.ok && r.setup){
-    setup = { user1: r.setup.user1 || "User 1", user2: r.setup.user2 || "User 2" };
-    localStorage.setItem("fittrack_setup", JSON.stringify(setup));
-    return { ok:true, note:"Setup loaded from Sheets" };
-  }
-  return { ok:false, note: r.error || "setup_get not supported" };
+function renderDashboard(){
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+
+  const w = filterByView(data.workouts);
+  const wWeek = w.filter(x => new Date(x.date) >= weekAgo);
+  const minutes = wWeek.reduce((s,x)=> s + (Number(x.duration)||0), 0);
+
+  const wt = filterByView(data.weight);
+  const lastWeight = wt.length ? wt[wt.length-1].value : "—";
+
+  const bp = filterByView(data.bp);
+  const lastBP = bp.length ? `${bp[bp.length-1].systolic}/${bp[bp.length-1].diastolic}` : "—";
+
+  document.getElementById("s_workouts").textContent = wWeek.length;
+  document.getElementById("s_minutes").textContent = minutes;
+  document.getElementById("s_weight").textContent = lastWeight;
+  document.getElementById("s_bp").textContent = lastBP;
+
+  document.getElementById("dashHint").textContent =
+    currentView === "all"
+      ? "Vue: tout le monde"
+      : `Vue: ${names[currentView] || currentView}`;
 }
 
-async function saveSetupRemoteIfPossible(){
-  const r = await apiPost({ action:"setup_set", user1: setup.user1, user2: setup.user2 });
-  if (r && r.ok) return { ok:true };
-  return { ok:false, error: r.error || "setup_set not supported" };
-}
+function renderLists(){
+  // Workouts
+  const w = filterByView(data.workouts).slice().reverse().slice(0, 30);
+  document.getElementById("w_list").innerHTML = w.length ? w.map(x=>`
+    <div class="item">
+      <div>
+        <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.duration} min • ${x.intensity}
+        <div class="muted">${formatDate(x.date)}</div>
+      </div>
+      <span class="pill">workout</span>
+    </div>
+  `).join("") : `<div class="muted">Aucun workout.</div>`;
 
-/* ===============================
-   LOAD ALL DATA
-================================ */
-async function loadAll(){
-  // Ping API with bp (most likely supported)
-  const ping = await apiGet("?action=bp");
-  if (!ping.ok && ping.error){
-    setApiStatus(false, ping.error);
-  } else {
-    setApiStatus(true, "Connexion OK");
-  }
+  // Meals
+  const m = filterByView(data.meals).slice().reverse().slice(0, 30);
+  document.getElementById("m_list").innerHTML = m.length ? m.map(x=>`
+    <div class="item">
+      <div>
+        <b>${names[x.user] || x.user}</b> — ${x.type} • ${x.time || ""}
+        <div class="muted">${x.description || ""}</div>
+        <div class="muted">${x.date || ""}</div>
+      </div>
+      <span class="pill">meal</span>
+    </div>
+  `).join("") : `<div class="muted">Aucun repas.</div>`;
 
-  // Setup
-  loadSetupLocal();
-  const setupRemote = await loadSetupRemoteIfPossible();
-  refreshUserSelectors();
+  // Weight
+  const wt = filterByView(data.weight).slice().reverse().slice(0, 30);
+  document.getElementById("wt_list").innerHTML = wt.length ? wt.map(x=>`
+    <div class="item">
+      <div>
+        <b>${names[x.user] || x.user}</b> — ${x.value} kg
+        <div class="muted">${x.date || ""}</div>
+      </div>
+      <span class="pill">weight</span>
+    </div>
+  `).join("") : `<div class="muted">Aucun poids.</div>`;
 
-  // Dates defaults
-  $("mTime").value = new Date().toTimeString().slice(0,5);
-  $("mDate").value = todayISO();
-  $("weDate").value = todayISO();
-  $("bpDate").value = todayISO();
-
-  // Data endpoints (they may or may not exist)
-  const bp = await apiGet("?action=bp");
-  dataBP = bp.ok ? (bp.rows || []) : [];
-  showErr($("bpErr"), bp.ok ? "" : (bp.error || "Impossible de charger BP"));
-
-  const w = await apiGet("?action=workouts");
-  dataWorkouts = w.ok ? (w.rows || []) : [];
-  showErr($("workoutErr"), w.ok ? "" : (w.error || "Impossible de charger Workouts"));
-
-  const m = await apiGet("?action=meals");
-  dataMeals = m.ok ? (m.rows || []) : [];
-  showErr($("mealErr"), m.ok ? "" : (m.error || "Impossible de charger Meals"));
-
-  const we = await apiGet("?action=weight");
-  dataWeight = we.ok ? (we.rows || []) : [];
-  showErr($("weightErr"), we.ok ? "" : (we.error || "Impossible de charger Weight"));
-
-  renderAll();
-  if (!setupRemote.ok) {
-    // Just info in debug, not an error
-    $("debugBox").textContent = "Setup: " + setupRemote.note;
-  }
+  // BP
+  const bp = filterByView(data.bp).slice().reverse().slice(0, 30);
+  document.getElementById("bp_list").innerHTML = bp.length ? bp.map(x=>`
+    <div class="item">
+      <div>
+        <b>${names[x.user] || x.user}</b> — ${x.systolic}/${x.diastolic} mmHg
+        ${x.heartRate ? ` • ${x.heartRate} bpm` : ""}
+        <div class="muted">${x.date || ""} • ${formatDate(x.timestamp || "")}</div>
+      </div>
+      <span class="pill">BP</span>
+    </div>
+  `).join("") : `<div class="muted">Aucun BP.</div>`;
 }
 
 function renderAll(){
   renderDashboard();
-  renderWorkouts();
-  renderMeals();
-  renderWeight();
-  renderBP();
+  renderLists();
 }
 
-/* ===============================
-   RENDERERS
-================================ */
-function renderDashboard(){
-  // Workouts last 7 days
-  const now = new Date();
-  const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
-
-  const w = filterByUser(dataWorkouts).filter(x => new Date(x.timestamp || x.date || 0) >= weekAgo);
-  const minutes = w.reduce((s,x)=> s + (Number(x.duration)||0), 0);
-
-  $("kpiWorkouts").textContent = w.length;
-  $("kpiMinutes").textContent = minutes;
-
-  // Latest weight
-  const weights = filterByUser(dataWeight);
-  const lastW = weights.length ? weights[weights.length-1] : null;
-  $("kpiWeight").textContent = lastW ? (lastW.value + " kg") : "—";
-
-  // Latest BP
-  const bps = filterByUser(dataBP);
-  const lastBP = bps.length ? bps[bps.length-1] : null;
-  $("kpiBP").textContent = lastBP ? (lastBP.systolic + "/" + lastBP.diastolic) : "—";
-}
-
-function renderWorkouts(){
-  const list = $("workoutList");
-  list.innerHTML = "";
-  const rows = filterByUser(dataWorkouts).slice().reverse().slice(0,30);
-
-  if (!rows.length){
-    list.innerHTML = `<div class="note">Aucun workout enregistré.</div>`;
-    return;
-  }
-
-  rows.forEach(r=>{
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <div class="left">
-        <div class="title">${r.type || "Workout"} — ${r.duration || "?"} min</div>
-        <div class="meta">👤 ${r.user==="user1"?setup.user1:setup.user2} • Intensité: ${r.intensity || "-" } • ${new Date(r.timestamp || Date.now()).toLocaleString()}</div>
-      </div>
-      <div class="badge">${r.intensity || "—"}</div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function renderMeals(){
-  const list = $("mealList");
-  list.innerHTML = "";
-  const rows = filterByUser(dataMeals).slice().reverse().slice(0,30);
-
-  if (!rows.length){
-    list.innerHTML = `<div class="note">Aucun meal enregistré.</div>`;
-    return;
-  }
-
-  rows.forEach(r=>{
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <div class="left">
-        <div class="title">${r.type || "Meal"} — ${r.time || ""}</div>
-        <div class="meta">👤 ${r.user==="user1"?setup.user1:setup.user2} • ${r.date || ""}<br>${(r.description || "").replaceAll("<","&lt;")}</div>
-      </div>
-      <div class="badge">${r.type || "—"}</div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function renderWeight(){
-  const list = $("weightList");
-  list.innerHTML = "";
-  const rows = filterByUser(dataWeight).slice().reverse().slice(0,30);
-
-  if (!rows.length){
-    list.innerHTML = `<div class="note">Aucun poids enregistré.</div>`;
-    return;
-  }
-
-  rows.forEach(r=>{
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <div class="left">
-        <div class="title">⚖️ ${r.value || "?"} kg</div>
-        <div class="meta">👤 ${r.user==="user1"?setup.user1:setup.user2} • ${r.date || ""}</div>
-      </div>
-      <div class="badge">Weight</div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function bpBadge(sys, dia){
-  sys = Number(sys); dia = Number(dia);
-  if (!Number.isFinite(sys) || !Number.isFinite(dia)) return { cls:"", txt:"—" };
-  if (sys >= 140 || dia >= 90) return { cls:"danger", txt:"High" };
-  if (sys < 90 || dia < 60) return { cls:"warn", txt:"Low" };
-  return { cls:"ok", txt:"Normal" };
-}
-
-function renderBP(){
-  const list = $("bpList");
-  list.innerHTML = "";
-  const rows = filterByUser(dataBP).slice().reverse().slice(0,30);
-
-  if (!rows.length){
-    list.innerHTML = `<div class="note">Aucune tension enregistrée.</div>`;
-    return;
-  }
-
-  rows.forEach(r=>{
-    const b = bpBadge(r.systolic, r.diastolic);
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <div class="left">
-        <div class="title">🩺 ${r.systolic || "?"}/${r.diastolic || "?"} mmHg ${r.heartRate ? "• ❤️ "+r.heartRate : ""}</div>
-        <div class="meta">👤 ${r.user==="user1"?setup.user1:setup.user2} • ${r.date || ""}</div>
-      </div>
-      <div class="badge ${b.cls}">${b.txt}</div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-/* ===============================
-   ACTIONS (ADD)
-================================ */
-$("btnAddBP").addEventListener("click", async () => {
-  showErr($("bpErr"), "");
-  const payload = {
-    action: "bp_add",
-    id: String(Date.now()),
-    user: $("bpUser").value,
-    systolic: safeNumber($("bpSys").value),
-    diastolic: safeNumber($("bpDia").value),
-    heartRate: $("bpHr").value ? safeNumber($("bpHr").value) : "",
-    date: $("bpDate").value || todayISO(),
-    timestamp: isoNow()
-  };
-
-  if (!payload.systolic || !payload.diastolic){
-    showErr($("bpErr"), "Remplis systolic + diastolic.");
-    return;
-  }
-
-  const r = await apiPost(payload);
-  if (!r.ok){
-    showErr($("bpErr"), r.error || "Erreur BP");
-    return;
-  }
-
-  // reload BP
-  const bp = await apiGet("?action=bp");
-  dataBP = bp.ok ? (bp.rows || []) : dataBP;
-  renderBP(); renderDashboard();
-});
-
-$("btnAddWorkout").addEventListener("click", async () => {
-  showErr($("workoutErr"), "");
+/** ========= ADD METHODS ========= **/
+async function addWorkout(){
   const payload = {
     action: "workout_add",
-    id: String(Date.now()),
-    user: $("wUser").value,
-    type: $("wType").value,
-    duration: safeNumber($("wDuration").value),
-    intensity: $("wIntensity").value,
-    timestamp: isoNow()
+    user: document.getElementById("w_user").value,
+    type: document.getElementById("w_type").value,
+    duration: Number(document.getElementById("w_duration").value || 0),
+    intensity: document.getElementById("w_intensity").value,
+    date: new Date().toISOString()
   };
-  if (!payload.duration){
-    showErr($("workoutErr"), "Remplis la durée.");
-    return;
-  }
   const r = await apiPost(payload);
-  if (!r.ok){
-    showErr($("workoutErr"), r.error || "Erreur Workouts (backend pas prêt ?)");
-    return;
-  }
-  const w = await apiGet("?action=workouts");
-  dataWorkouts = w.ok ? (w.rows || []) : dataWorkouts;
-  $("wDuration").value = "";
-  renderWorkouts(); renderDashboard();
-});
+  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
+  toast("Workout sauvegardé ✅");
+  await reloadAll();
+}
 
-$("btnAddMeal").addEventListener("click", async () => {
-  showErr($("mealErr"), "");
+async function addMeal(){
   const payload = {
     action: "meal_add",
-    id: String(Date.now()),
-    user: $("mUser").value,
-    type: $("mType").value,
-    time: $("mTime").value || new Date().toTimeString().slice(0,5),
-    description: ($("mDesc").value || "").trim(),
-    date: $("mDate").value || todayISO(),
-    timestamp: isoNow()
+    user: document.getElementById("m_user").value,
+    type: document.getElementById("m_type").value,
+    time: document.getElementById("m_time").value,
+    description: document.getElementById("m_desc").value,
+    date: new Date().toISOString().split("T")[0],
+    fullDate: new Date().toISOString()
   };
-  if (!payload.description){
-    showErr($("mealErr"), "Ajoute une description.");
-    return;
-  }
   const r = await apiPost(payload);
-  if (!r.ok){
-    showErr($("mealErr"), r.error || "Erreur Meals (backend pas prêt ?)");
-    return;
-  }
-  const m = await apiGet("?action=meals");
-  dataMeals = m.ok ? (m.rows || []) : dataMeals;
-  $("mDesc").value = "";
-  renderMeals();
-});
+  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
+  toast("Meal sauvegardé ✅");
+  await reloadAll();
+}
 
-$("btnAddWeight").addEventListener("click", async () => {
-  showErr($("weightErr"), "");
+async function addWeight(){
   const payload = {
     action: "weight_add",
-    id: String(Date.now()),
-    user: $("weUser").value,
-    value: safeNumber($("weValue").value),
-    date: $("weDate").value || todayISO(),
-    timestamp: isoNow()
+    user: document.getElementById("wt_user").value,
+    value: Number(document.getElementById("wt_value").value || 0),
+    date: document.getElementById("wt_date").value || new Date().toISOString().split("T")[0],
+    timestamp: new Date().toISOString()
   };
-  if (!payload.value){
-    showErr($("weightErr"), "Remplis le poids.");
-    return;
-  }
   const r = await apiPost(payload);
-  if (!r.ok){
-    showErr($("weightErr"), r.error || "Erreur Weight (backend pas prêt ?)");
-    return;
-  }
-  const we = await apiGet("?action=weight");
-  dataWeight = we.ok ? (we.rows || []) : dataWeight;
-  $("weValue").value = "";
-  renderWeight(); renderDashboard();
-});
+  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
+  toast("Poids sauvegardé ✅");
+  await reloadAll();
+}
 
-/* ===============================
-   HEADER / SETTINGS
-================================ */
-$("btnRefresh").addEventListener("click", loadAll);
-
-$("viewUser").addEventListener("change", () => {
-  currentUserView = $("viewUser").value;
-  renderAll();
-});
-
-$("btnClearLocal").addEventListener("click", () => {
-  localStorage.removeItem("fittrack_setup");
-  setup = { user1:"User 1", user2:"User 2" };
-  refreshUserSelectors();
-  currentUserView = "all";
-  $("viewUser").value = "all";
-  renderAll();
-});
-
-$("btnNames").addEventListener("click", () => {
-  $("name1").value = setup.user1;
-  $("name2").value = setup.user2;
-  $("namesModal").style.display = "flex";
-});
-$("btnCancelNames").addEventListener("click", () => {
-  $("namesModal").style.display = "none";
-});
-$("btnSaveNames").addEventListener("click", async () => {
-  setup = {
-    user1: ($("name1").value || "").trim() || "User 1",
-    user2: ($("name2").value || "").trim() || "User 2"
+async function addBP(){
+  const payload = {
+    action: "bp_add",
+    user: document.getElementById("bp_user").value,
+    systolic: Number(document.getElementById("bp_sys").value || 0),
+    diastolic: Number(document.getElementById("bp_dia").value || 0),
+    heartRate: Number(document.getElementById("bp_hr").value || 0),
+    date: new Date().toISOString().split("T")[0],
+    timestamp: new Date().toISOString()
   };
-  localStorage.setItem("fittrack_setup", JSON.stringify(setup));
-  refreshUserSelectors();
-  renderAll();
-  $("namesModal").style.display = "none";
+  const r = await apiPost(payload);
+  if(!r.ok) return alert("Erreur: " + (r.error || "unknown"));
+  toast("BP sauvegardé ✅");
+  await reloadAll();
+}
 
-  // try remote save if backend supports it (not mandatory)
-  const r = await saveSetupRemoteIfPossible();
-  if (!r.ok) {
-    $("debugBox").textContent = "Setup sauvegardé en local (backend Setup non supporté).";
-  } else {
-    $("debugBox").textContent = "Setup sauvegardé dans Google Sheets ✅";
+/** ========= RELOAD ========= **/
+async function reloadAll(){
+  toast("Rechargement…");
+
+  // charge tout depuis Sheets
+  const kinds = ["workouts","meals","weight","bp"];
+  for(const k of kinds){
+    const r = await listSheet(k);
+    if(!r || !r.ok){
+      console.warn("Load error", k, r);
+      alert(`Erreur sur "${k}": ${r?.error || "unknown"}\n\n👉 Vérifie le nom EXACT de l'onglet.\nEx: BP vs bp`);
+      return;
+    }
+    data[k] = r.rows || [];
   }
-});
 
-/* ===============================
-   START
-================================ */
-(function start(){
-  refreshUserSelectors();
-  $("viewUser").value = "all";
-  currentUserView = "all";
-  loadAll();
+  // cache local juste pour confort
+  localStorage.setItem("fittrack_cache", JSON.stringify(data));
+
+  renderAll();
+  toast("OK ✅");
+}
+
+/** ========= BOOT ========= **/
+(function boot(){
+  document.getElementById("apiLabel").textContent = API_URL;
+  fillUsers();
+
+  // defaults time/date
+  const now = new Date();
+  document.getElementById("m_time").value = now.toTimeString().slice(0,5);
+  document.getElementById("wt_date").value = now.toISOString().split("T")[0];
+
+  // tente d’afficher cache instant puis reload
+  const cache = localStorage.getItem("fittrack_cache");
+  if(cache){
+    try{
+      data = JSON.parse(cache);
+      renderAll();
+      document.getElementById("dashHint").textContent = "Cache local affiché… puis reload Google Sheets.";
+    }catch(e){}
+  }
+  reloadAll();
 })();
 </script>
 </body>
